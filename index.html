@@ -294,13 +294,13 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
     </div>
     <div class="h-title">
       <h1>Radar ODS — Municípios da Margem Equatorial Maranhense</h1>
-      <p>Módulo ISM · ODS 7, 11, 13, 14 e 17 · UFMA / FAPEMA Edital 03/2026 Deep Tech Catalyst · Cunha et al., 2025</p>
+      <p>Módulo ISM · ODS 7, 11, 13, 14 e 17 · UFMA · Cunha et al., 2025</p>
     </div>
   </div>
   <div class="h-right">
     <span class="badge">4 Municípios-piloto</span>
     <span class="badge">Escala 1–5</span>
-    <span class="badge-pill" id="hdr-mun">Barreirinha</span>
+    <span class="badge-pill" id="hdr-mun">São Luís</span>
   </div>
 </header>
 
@@ -318,10 +318,7 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
   <aside>
     <div class="s-section">
       <div class="s-label">Município-piloto</div>
-      <select id="mun-select">
-        <option>Barreirinha</option><option>Santo Amaro</option>
-        <option>Humberto de Campos</option><option>Tutóia</option>
-      </select>
+      <select id="mun-select"></select>
     </div>
     <div class="s-section">
       <div class="s-label">Filtrar por ODS</div>
@@ -340,7 +337,6 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
     </div>
     <div style="font-size:.59rem;opacity:.38;text-align:center;margin-top:12px;line-height:1.6">
       Dados reais: IBGE Censo 2022<br>SINISA 2024 · MUNIC 2023<br>IBAMA/MapBiomas 2022<br>CEMADEN 2024 · ANEEL 2024<br>ANA · MPA · CGU 2023<br><br>
-      ⚠ Barreirinha: estimativa<br>proxy Microrregiões Norte MA<br><br>
       Modelo: Cunha et al.<br>Marine Policy, 2025
     </div>
   </aside>
@@ -352,7 +348,7 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
       <div class="kpi d"><div class="kl">ODS Prioritário</div><div class="kv" id="kv-worst">—</div><div class="ks" id="ks-worst"></div></div>
     </div>
     <div class="g2">
-      <div class="cc"><h3>🎯 Radar ISM-ODS <span class="chip" id="r-chip">Barreirinha</span></h3><div class="rw"><canvas id="radarChart"></canvas></div></div>
+      <div class="cc"><h3>🎯 Radar ISM-ODS <span class="chip" id="r-chip">São Luís</span></h3><div class="rw"><canvas id="radarChart"></canvas></div></div>
       <div class="cc"><h3>📋 Indicadores <span class="chip" id="i-chip">ODS 7</span></h3><div class="ind-list" id="ind-list"></div></div>
     </div>
     <div class="g2b">
@@ -464,13 +460,13 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
         <div class="ed-item"><div class="ed-org">BNDES</div><div class="ed-title">BNDES Clima — Infraestrutura Sustentável Municipal</div><div class="ed-desc">Adaptação climática, energia renovável e saneamento. ISM-ODS mín. 2,5.</div><div class="ed-tags"><span class="ed-tag tg">ODS 7 · 13</span><span class="ed-tag tb">R$ 500k – 5mi</span><span class="ed-tag to">dez/2026</span></div></div>
         <div class="ed-item"><div class="ed-org">BID — Banco Interamericano de Desenvolvimento</div><div class="ed-title">BID Cidades Sustentáveis — Municípios Costeiros</div><div class="ed-desc">Gestão costeira, manguezais e resiliência climática. ISM-ODS mín. 2,8.</div><div class="ed-tags"><span class="ed-tag tg">ODS 11 · 14</span><span class="ed-tag tb">USD 1–10mi</span><span class="ed-tag to">mar/2027</span></div></div>
         <div class="ed-item"><div class="ed-org">Fundo Amazônia / BNDES</div><div class="ed-title">Conservação de Manguezais e Ecossistemas Costeiros</div><div class="ed-desc">Preservação, monitoramento e pesca sustentável. ISM-ODS 14 mín. 2,0.</div><div class="ed-tags"><span class="ed-tag tg">ODS 14</span><span class="ed-tag tb">R$ 200k – 2mi</span><span class="ed-tag to">abr/2027</span></div></div>
-        <div class="ed-item"><div class="ed-org">FAPEMA · Edital 03/2026</div><div class="ed-title">Deep Tech Catalyst — Radar ODS</div><div class="ed-desc">Desenvolvimento de tecnologias sociais e soluções digitais orientadas à ODS.</div><div class="ed-tags"><span class="ed-tag tg">ODS 17</span><span class="ed-tag tb">R$ 198.910</span><span class="ed-tag to">Vigente</span></div></div>
+
         <div class="ed-item"><div class="ed-org">FNDR — Fundo Nacional de Desenvolvimento Regional</div><div class="ed-title">Infraestrutura Urbana e Saneamento — Nordeste</div><div class="ed-desc">Saneamento básico e habitação em municípios de baixo IDH.</div><div class="ed-tags"><span class="ed-tag tg">ODS 11</span><span class="ed-tag tb">R$ 1–20mi</span><span class="ed-tag to">set/2026</span></div></div>
       </div>
       <div class="gest-card">
         <h3>🤖 Apoio IA — Estratégias por Município</h3>
         <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Sugestões calibradas ao ISM-ODS de cada município e aos editais vigentes.</div>
-        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Barreirinha</strong><span class="chip-ods" style="background:#0A97D9">ODS 14</span></div><div style="font-size:.68rem;color:var(--muted)">Prioridade: iniciar mapeamento de manguezais (nível 1 → 2). Submeter projeto ao Fundo Amazônia até abr/2027. Parceria recomendada: IBAMA/UFMA.</div></div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">São Luís</strong><span class="chip-ods" style="background:#FD9D24">ODS 11</span></div><div style="font-size:.68rem;color:var(--muted)">Maior gap: esgotamento sanitário (41,9% — SINISA 2024). Escalar cobertura via BNDES Saneamento e parceria CAEMA/prefeitura. Prioridade também: sistema de alertas hidrológicos (CEMADEN).</div></div>
         <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Santo Amaro</strong><span class="chip-ods" style="background:#FCC30B">ODS 7</span></div><div style="font-size:.68rem;color:var(--muted)">Maior gap: energia renovável. Instalar solar em escolas e UBS via ANEEL PROCEL. Prazo: BNDES Clima dez/2026.</div></div>
         <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Humberto de Campos</strong><span class="chip-ods" style="background:#19486A">ODS 17</span></div><div style="font-size:.68rem;color:var(--muted)">Boa base em ODS 14. Avançar em parcerias: formalizar convênio com UFMA e candidatar ao BID Cidades Sustentáveis mar/2027.</div></div>
         <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Tutóia</strong><span class="chip-ods" style="background:#3F7E44">ODS 13</span></div><div style="font-size:.68rem;color:var(--muted)">Município mais desenvolvido. Ampliar PAC com dados CEMADEN e publicar como dado aberto. Candidatar ao Prêmio Cidades Sustentáveis.</div></div>
@@ -490,7 +486,7 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
         <h3>🌐 Rede Colaborativa Municipal</h3>
         <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Troca de boas práticas entre os municípios da Margem Equatorial Maranhense.</div>
         <div class="net-grid">
-          <div class="net-card"><div class="net-nm">🏘 Barreirinha</div><div class="net-tags"><span class="net-t" style="background:var(--ods14)">ODS 14</span><span class="net-t" style="background:var(--ods13)">ODS 13</span></div><div style="font-size:.65rem;color:var(--muted)">Gestão de manguezais e vulnerabilidade costeira</div><div class="net-st">● Ativa</div></div>
+          <div class="net-card"><div class="net-nm">🏙 São Luís</div><div class="net-tags"><span class="net-t" style="background:var(--ods11)">ODS 11</span><span class="net-t" style="background:var(--ods17)">ODS 17</span></div><div style="font-size:.65rem;color:var(--muted)">Capital do estado — saneamento urbano e parcerias institucionais</div><div class="net-st">● Ativa</div></div>
           <div class="net-card"><div class="net-nm">🏘 Santo Amaro</div><div class="net-tags"><span class="net-t" style="background:var(--ods7)">ODS 7</span><span class="net-t" style="background:var(--ods11)">ODS 11</span></div><div style="font-size:.65rem;color:var(--muted)">Energia solar e saneamento rural</div><div class="net-st">● Ativa</div></div>
           <div class="net-card"><div class="net-nm">🏘 Humberto de Campos</div><div class="net-tags"><span class="net-t" style="background:var(--ods14)">ODS 14</span><span class="net-t" style="background:var(--ods17)">ODS 17</span></div><div style="font-size:.65rem;color:var(--muted)">Pesca sustentável e parcerias</div><div class="net-st">● Ativa</div></div>
           <div class="net-card"><div class="net-nm">🏘 Tutóia</div><div class="net-tags"><span class="net-t" style="background:var(--ods11)">ODS 11</span><span class="net-t" style="background:var(--ods13)">ODS 13</span><span class="net-t" style="background:var(--ods17)">ODS 17</span></div><div style="font-size:.65rem;color:var(--muted)">Cidades sustentáveis e captação</div><div class="net-st">● Ativa</div></div>
@@ -513,7 +509,7 @@ const ODS_LIST = [
   {id:14, name:"Vida na Água",                short:"Oceanos",   color:"#0A97D9"},
   {id:17, name:"Parcerias e Meios de Impl.",  short:"Parcerias", color:"#19486A"},
 ];
-const MUNS = ["Barreirinha","Santo Amaro","Humberto de Campos","Tutóia"];
+const MUNS = ["São Luís","Santo Amaro","Humberto de Campos","Tutóia"];
 const MAT  = ["","Inicial","Emergente","Em Desenvolvimento","Avançado","Referência"];
 const MATC = ["","#e53e3e","#dd6b20","#d69e2e","#38a169","#2f855a"];
 
@@ -561,9 +557,9 @@ const INDICATORS = {
 // ODS 13: [plano_adaptação, alertas_extremos, vuln_mapeada, cobert_vegetal, red_emissões]
 // ODS 14: [manguezais, gestão_pesqueira, qualid_água, bandeira_azul, monit_ecossist]
 // ODS 17: [financ_climáticos, parcerias_inst, reporte_ODS, redes_colab, transparência]
-// * Barreirinha (IBGE 2101608): dados proxy Microrregião Norte Maranhense — não disponível em IAS/SINISA
+// * São Luís (IBGE 2111300): capital do MA, 1.088.057 hab. — dados SINISA 2024 / Censo 2022 / MUNIC 2023
 const SCORES = {
-  "Barreirinha":        {7:[3,1,1,1,1], 11:[2,2,1,2,2], 13:[2,1,1,2,1], 14:[2,2,1,1,1], 17:[1,2,3,2,1]},
+  "São Luís":           {7:[5,2,3,3,2], 11:[2,2,4,3,3], 13:[2,1,1,2,2], 14:[3,2,3,1,3], 17:[3,4,4,4,3]},
   "Santo Amaro":        {7:[2,1,1,1,1], 11:[1,1,1,2,2], 13:[2,1,1,2,1], 14:[2,2,1,1,1], 17:[1,2,2,2,1]},
   "Humberto de Campos": {7:[3,1,1,2,1], 11:[1,2,1,2,2], 13:[1,1,1,3,1], 14:[3,2,1,1,1], 17:[1,1,2,1,1]},
   "Tutóia":             {7:[4,1,1,2,1], 11:[1,2,1,3,3], 13:[1,1,1,3,1], 14:[3,2,1,1,2], 17:[1,2,2,2,2]},
@@ -594,14 +590,14 @@ const ACTIONS = {
       4:{t:"Certificar praias e proteger estoques",b:"Obter Bandeira Azul. Implementar acordos de pesca sustentável."},
       5:{t:"Referência em gestão costeira",b:"Publicar modelo como dado aberto. Liderar rede da Margem Equatorial."}},
   17:{1:{t:"Mapear instrumentos de financiamento",b:"Identificar editais BNDES/BID/Fundo Amazônia. Capacitar gestores."},
-      2:{t:"Estabelecer parceria com UFMA",b:"Formalizar convênio UFMA/FAPEMA. Participar da rede Radar ODS."},
+      2:{t:"Estabelecer parceria com UFMA",b:"Formalizar convênio com UFMA. Participar da rede Radar ODS."},
       3:{t:"Submeter projetos a editais climáticos",b:"Elaborar e submeter projeto ao BNDES Clima. Criar setor de ODS."},
       4:{t:"Construir portfólio de parcerias",b:"Documentar parcerias. Reportar progresso ODS ao IBGE."},
       5:{t:"Liderar articulação regional de ODS",b:"Coordenar rede de municípios costeiros. Publicar relatório anual."}}
 };
 
 // ── STATE ──────────────────────────────────────────
-let selMun  = "Barreirinha";
+let selMun  = "São Luís";
 let selODS  = null;
 let radarCh = null;
 let simCh   = null;
@@ -612,7 +608,7 @@ let simODS  = 7;
 let simScores = {};
 
 const COORDS = {
-  "Barreirinha":[-2.788,-45.065],
+  "São Luís":[-2.529,-44.303],
   "Santo Amaro":[-2.811,-43.353],
   "Humberto de Campos":[-2.613,-43.466],
   "Tutóia":[-2.766,-42.274]
@@ -769,7 +765,7 @@ function updateMap(){
 
 // ══ SIMULAÇÃO ════════════════════════════════════
 function initSim(mun){
-  const m=mun||document.getElementById('sim-mun').value||'Barreirinha';
+  const m=mun||document.getElementById('sim-mun').value||'São Luís';
   // Deep copy scores for simulation
   simScores={};
   MUNS.forEach(mn=>{simScores[mn]={};ODS_LIST.forEach(o=>{simScores[mn][o.id]=[...SCORES[mn][o.id]]});});
@@ -992,8 +988,7 @@ window.addEventListener('load',init);
   </h2>
   <p style="font-size:.67rem;color:#718096;margin-bottom:18px;line-height:1.7;max-width:900px">
     Os scores ISM-ODS foram calculados com base em dados oficiais abertos consultados em 2025–2026.
-    <strong>Nota metodológica:</strong> Barreirinha (IBGE 2101608) não consta nas bases IAS/SINISA consultadas; os indicadores foram estimados com base em dados da Microrregião Norte Maranhense (SINISA/IBGE 2022–2024) e sinalizados com ⚠ na plataforma.
-    Os scores não disponíveis em fontes abertas foram classificados com base em critérios qualitativos (IBGE MUNIC 2023) e representam uma baseline para validação em campo prevista pelo projeto Radar ODS (FAPEMA Edital 03/2026).
+    <strong>Nota metodológica:</strong> Os scores não disponíveis em fontes abertas foram classificados com base em critérios qualitativos (IBGE MUNIC 2023) e representam uma baseline para validação em campo. São Luís (IBGE 2111300, capital do MA) apresenta cobertura completa nas quatro componentes do SINISA 2024, sendo o único município-piloto com dados declarados para água, esgoto, resíduos sólidos e drenagem.
   </p>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px;">
@@ -1006,7 +1001,9 @@ window.addEventListener('load',init);
 
     <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #003893">
       <div style="font-weight:700;color:#001f5b;margin-bottom:4px">2. SINISA 2024 — Sistema Nacional de Informações em Saneamento Básico</div>
-      <div style="color:#718096;line-height:1.6">Cobertura de água, esgoto e resíduos sólidos por município. Dados consultados via Instituto Água e Saneamento (IAS) para Santo Amaro (2110278), Humberto de Campos (2105005) e Tutóia (2112506).</div>
+      <div style="color:#718096;line-height:1.6">Cobertura de água, esgoto e resíduos sólidos por município. Dados consultados via Instituto Água e Saneamento (IAS) para São Luís (2111300), Santo Amaro (2110278), Humberto de Campos (2105005) e Tutóia (2112506). São Luís: esgoto 41,9%; água 89,2%; resíduos 100% (SINISA 2024).</div>
+      <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/sao-luis" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">IAS · São Luís ↗</a>
+      &nbsp;|&nbsp;
       <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">aguaesaneamento.org.br ↗</a>
     </div>
 
@@ -1061,7 +1058,7 @@ window.addEventListener('load',init);
     <div style="background:#eef2fb;border-radius:8px;padding:12px 14px;border-left:3px solid #001f5b;grid-column:1/-1">
       <div style="font-weight:700;color:#001f5b;margin-bottom:4px">11. Referência Metodológica — Modelo de Atributos ODS</div>
       <div style="color:#718096;line-height:1.6">Cunha, D.R., et al. (2025). <em>A multi-attribute sustainability model for port municipalities under the Sustainable Development Goals.</em> <strong>Marine Policy</strong>. Universidade Federal do Maranhão (UFMA) / Erasmus University Rotterdam.
-        A metodologia ISM-ODS (escala 1–5, 5 níveis de maturidade) é aplicada aqui aos 4 municípios-piloto do Projeto Radar ODS, financiado pela FAPEMA (Edital 03/2026 — Deep Tech Catalyst).</div>
+        A metodologia ISM-ODS (escala 1–5, 5 níveis de maturidade) é aplicada aqui aos 4 municípios-piloto do Projeto Radar ODS.</div>
       <a href="https://sdgporthub.com" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">sdgporthub.com ↗</a>
       &nbsp;|&nbsp;
       <a href="https://sdgports.manus.space" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">sdgports.manus.space ↗</a>
@@ -1070,7 +1067,7 @@ window.addEventListener('load',init);
   </div>
 
   <p style="font-size:.63rem;color:#a0aec0;margin-top:18px;text-align:center;line-height:1.6">
-    Plataforma desenvolvida no âmbito do Projeto Radar ODS — FAPEMA Edital 03/2026 · Profa. Dra. Darliane Ribeiro Cunha (PI) · UFMA · Versão 2.0 (dados reais) · Junho/2026
+    Plataforma desenvolvida no âmbito do Projeto Radar ODS · Profa. Dra. Darliane Ribeiro Cunha (PI) · UFMA · Versão 2.0 (dados reais) · Junho/2026
   </p>
 </section>
 
