@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar ODS — Margem Equatorial Maranhense</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#001f5b;--blue:#003893;--mid:#005b9a;--accent:#009EDB;
+  --bg:#f0f4f8;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#718096;
+  --ods7:#FCC30B;--ods11:#FD9D24;--ods13:#3F7E44;--ods14:#0A97D9;--ods17:#19486A;
+  --m1:#e53e3e;--m2:#dd6b20;--m3:#d69e2e;--m4:#38a169;--m5:#2f855a;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text)}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,var(--dark),var(--blue) 55%,var(--mid));
+  color:#fff;height:68px;padding:0 24px;display:flex;align-items:center;
+  justify-content:space-between;box-shadow:0 3px 14px rgba(0,0,0,.28);
+  position:sticky;top:0;z-index:1000
+}
+.h-left{display:flex;align-items:center;gap:13px}
+.h-logo{width:44px;height:44px;background:#fff;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 0 0 3px rgba(255,255,255,.22)}
+.h-title h1{font-size:1rem;font-weight:700}
+.h-title p{font-size:.68rem;opacity:.72;margin-top:2px}
+.h-right{display:flex;align-items:center;gap:7px}
+.badge{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.26);
+  padding:3px 11px;border-radius:20px;font-size:.68rem;white-space:nowrap}
+.badge-pill{background:var(--accent);padding:3px 13px;border-radius:20px;font-size:.73rem;font-weight:700}
+
+/* TABS */
+.module-tabs{display:flex;background:var(--dark);padding:0 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.tab-btn{padding:11px 18px;color:rgba(255,255,255,.55);font-size:.78rem;font-weight:600;
+  border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;
+  transition:all .2s;white-space:nowrap}
+.tab-btn.active{color:#fff;border-bottom-color:var(--accent)}
+.tab-btn:hover{color:#fff}
+
+/* LAYOUT */
+.layout{display:flex;height:calc(100vh - 112px);overflow:hidden}
+.module-panel{display:none;width:100%}
+.module-panel.active{display:flex;flex-direction:column}
+#mod-ism.active,#mod-sim.active{flex-direction:row}
+
+/* SIDEBAR */
+aside{width:232px;background:var(--dark);color:#fff;overflow-y:auto;
+  padding:14px 12px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.07)}
+.s-label{font-size:.59rem;text-transform:uppercase;letter-spacing:.12em;
+  opacity:.5;font-weight:700;margin-bottom:6px}
+.s-section{margin-bottom:18px}
+select{width:100%;padding:7px 26px 7px 9px;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:7px;
+  font-size:.77rem;cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,.6)'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center}
+select option{background:#003893}
+.ods-grid-sb{display:flex;flex-direction:column;gap:4px}
+.ods-pill{display:flex;align-items:center;gap:7px;padding:7px 9px;
+  border:2px solid transparent;border-radius:7px;cursor:pointer;
+  background:rgba(255,255,255,.08);font-size:.73rem;font-weight:600;color:#fff;transition:all .2s}
+.ods-pill:hover{background:rgba(255,255,255,.17)}
+.ods-pill.active{border-color:rgba(255,255,255,.65);background:rgba(255,255,255,.19)}
+.ods-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ods-pill-all{width:100%;padding:6px 9px;border:2px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.09);color:#fff;border-radius:7px;font-size:.72rem;
+  cursor:pointer;font-weight:600;margin-bottom:6px;transition:all .2s}
+.ods-pill-all.active,.ods-pill-all:hover{background:rgba(255,255,255,.21);border-color:#fff}
+.mat-legend{display:flex;flex-direction:column;gap:3px}
+.mat-row{display:flex;align-items:center;gap:5px;font-size:.64rem}
+.mat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* MAIN */
+main{flex:1;overflow-y:auto;padding:15px}
+
+/* GRIDS */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.g2b{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+
+/* KPI */
+.kpi{background:var(--card);border-radius:10px;padding:13px 15px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid var(--accent)}
+.kpi.s{border-color:var(--m4)}.kpi.d{border-color:var(--m1)}.kpi.w{border-color:var(--m3)}
+.kl{font-size:.61rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+.kv{font-size:1.85rem;font-weight:900;margin:4px 0 2px;line-height:1}
+.ks{font-size:.66rem;color:var(--muted)}
+
+/* CARDS */
+.cc{background:var(--card);border-radius:10px;padding:15px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.cc h3{font-size:.78rem;font-weight:700;color:var(--blue);margin-bottom:11px;
+  display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.chip{background:#eef2fb;color:var(--blue);padding:1px 8px;border-radius:20px;
+  font-weight:600;font-size:.69rem}
+.chip-ods{padding:2px 7px;border-radius:4px;color:#fff;font-size:.66rem;font-weight:800}
+
+/* RADAR */
+.rw{position:relative;height:270px}
+
+/* MAP */
+#map{height:270px;border-radius:8px}
+
+/* INDICATORS */
+.ind-list{display:flex;flex-direction:column;gap:9px;max-height:270px;overflow-y:auto;padding-right:3px}
+.ind-item{display:flex;flex-direction:column;gap:3px}
+.ind-hd{display:flex;justify-content:space-between;align-items:center}
+.ind-nm{font-size:.69rem;font-weight:500;flex:1;margin-right:6px}
+.ind-ft{font-size:.58rem;color:var(--muted)}
+.ind-sr{display:flex;align-items:center;gap:5px}
+.mat-badge{font-size:.58rem;font-weight:800;padding:2px 6px;border-radius:20px;color:#fff;white-space:nowrap}
+.bt{height:6px;background:#edf2f7;border-radius:3px;flex:1}
+.bf{height:100%;border-radius:3px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* ACTIONS */
+.act-list{display:flex;flex-direction:column;gap:7px;max-height:270px;overflow-y:auto}
+.act-card{border-radius:8px;padding:9px 11px;font-size:.72rem;border-left:4px solid transparent;background:#f7fafc}
+.act-tag{font-size:.6rem;font-weight:800;padding:1px 6px;border-radius:3px;color:#fff;margin-bottom:4px;display:inline-block}
+.act-t{font-weight:600;margin-bottom:2px;font-size:.72rem}
+.act-b{color:var(--muted);line-height:1.42;font-size:.68rem}
+.act-f{font-size:.6rem;color:var(--accent);margin-top:4px;font-weight:600}
+
+/* MAP LEGEND */
+.map-legend{background:#fff;padding:8px 10px;border-radius:8px;
+  box-shadow:0 2px 10px rgba(0,0,0,.15);font-size:.68rem}
+.lr{display:flex;align-items:center;gap:5px;margin:2px 0}
+.ld{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* ═══ SIMULAÇÃO ═══ */
+.sim-ods-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.sim-ods-btn{padding:6px 13px;border:2px solid var(--border);border-radius:20px;
+  font-size:.73rem;font-weight:700;cursor:pointer;background:#fff;transition:all .2s}
+.sim-ods-btn.active{color:#fff;border-color:transparent}
+.sim-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;height:calc(100% - 42px)}
+.sim-sliders{display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-right:4px}
+.sim-ind{background:#f7fafc;border-radius:9px;padding:11px 13px}
+.sim-ind-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sim-ind-nm{font-size:.72rem;font-weight:600}
+.sim-scores{display:flex;align-items:center;gap:10px;font-size:.75rem}
+.sim-cur{color:var(--muted)}
+.sim-new{font-weight:800}
+.sim-delta{font-size:.65rem;font-weight:700;padding:1px 5px;border-radius:10px}
+.sim-delta.up{background:#c6f6d5;color:#276749}
+.sim-delta.same{background:#e2e8f0;color:#555}
+input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;height:4px}
+.sim-right{display:flex;flex-direction:column;gap:12px}
+.sim-summary{background:#f7fafc;border-radius:9px;padding:13px}
+.sim-kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.sim-kpi{background:#fff;border-radius:8px;padding:10px;border-left:3px solid var(--accent)}
+.sim-kpi.good{border-color:var(--m4)}.sim-kpi.bad{border-color:var(--m1)}
+.sim-kv-row{display:flex;align-items:flex-end;gap:8px}
+.sim-cur-v{font-size:1.3rem;font-weight:800;color:var(--muted)}
+.sim-arrow{font-size:1.1rem}
+.sim-new-v{font-size:1.6rem;font-weight:900}
+.sim-kpi-l{font-size:.62rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:3px}
+.sim-radar-wrap{position:relative;height:230px}
+.sim-access{margin-top:6px}
+.sim-access h4{font-size:.72rem;font-weight:700;color:var(--blue);margin-bottom:7px}
+.sim-edital{background:#fff;border:1px solid var(--border);border-radius:7px;padding:8px 10px;margin-bottom:5px;font-size:.69rem}
+.sim-edital .ed-org{color:var(--accent);font-weight:700;font-size:.64rem}
+.sim-edital .ed-nm{font-weight:600;margin:2px 0}
+.sim-edital .ed-cond{color:var(--muted)}
+.sim-reset{width:100%;padding:8px;background:var(--blue);color:#fff;border:none;
+  border-radius:7px;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:8px;transition:background .2s}
+.sim-reset:hover{background:var(--accent)}
+
+/* ═══ COMPARATIVO ═══ */
+.comp-main{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:13px}
+.comp-top{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.comp-mun-card{background:var(--card);border-radius:10px;padding:13px 15px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:pointer;border:2px solid transparent;transition:all .2s}
+.comp-mun-card:hover,.comp-mun-card.active{border-color:var(--accent)}
+.comp-mun-nm{font-size:.85rem;font-weight:700;margin-bottom:4px}
+.comp-ism{font-size:1.7rem;font-weight:900;line-height:1}
+.comp-mat{font-size:.68rem;font-weight:700;margin-top:3px}
+.comp-bars{display:flex;gap:4px;margin-top:7px}
+.comp-bar-mini{flex:1;height:28px;border-radius:4px;display:flex;align-items:flex-end;overflow:hidden}
+.comp-bar-fill{width:100%;border-radius:4px;transition:height .4s}
+.comp-mid{display:grid;grid-template-columns:2fr 1fr;gap:13px}
+.rank-table{width:100%;border-collapse:collapse;font-size:.72rem}
+.rank-table th{background:#f7fafc;padding:8px 10px;text-align:left;font-weight:700;
+  color:var(--blue);border-bottom:2px solid var(--border);font-size:.64rem;
+  text-transform:uppercase;letter-spacing:.05em}
+.rank-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.rank-table tr:last-child td{border-bottom:none}
+.rank-table tr:hover td{background:#f7fafc}
+.rank-num{font-weight:900;color:var(--blue);font-size:.85rem}
+.ods-score-cell{text-align:center;font-weight:700}
+.rank-ism{font-size:1rem;font-weight:900}
+.rank-mat{font-size:.64rem;font-weight:700;padding:2px 7px;border-radius:20px;color:#fff}
+.comp-chart-wrap{position:relative;height:260px}
+.comp-bottom{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.comp-ods-card{background:var(--card);border-radius:10px;padding:13px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.comp-ods-title{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.comp-ods-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.comp-ods-nm{font-size:.7rem;font-weight:700}
+.comp-ods-mun{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.comp-ods-mun-nm{font-size:.67rem}
+.comp-ods-val{font-size:.73rem;font-weight:800}
+.comp-ods-bar{height:5px;background:#edf2f7;border-radius:3px;overflow:hidden;margin-bottom:5px}
+.comp-ods-fill{height:100%;border-radius:3px}
+
+/* ═══ GAP ANALYSIS ═══ */
+.gap-main{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:13px}
+.gap-header-row{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.gap-mun-summary{background:var(--card);border-radius:10px;padding:13px 15px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.gap-mun-nm{font-size:.85rem;font-weight:700;margin-bottom:2px}
+.gap-ism-now{font-size:1.5rem;font-weight:900;line-height:1}
+.gap-to-target{font-size:.7rem;color:var(--muted);margin-top:2px}
+.gap-year{font-size:.7rem;font-weight:700;margin-top:5px}
+.gap-progress{height:7px;background:#e2e8f0;border-radius:4px;margin-top:6px;overflow:hidden}
+.gap-progress-fill{height:100%;border-radius:4px;transition:width .5s}
+.gap-matrix{background:var(--card);border-radius:10px;padding:15px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.gap-matrix h3{font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:12px}
+.gap-table{width:100%;border-collapse:collapse;font-size:.72rem}
+.gap-table th{padding:8px 12px;text-align:center;font-size:.64rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border)}
+.gap-table th.left{text-align:left;color:var(--blue)}
+.gap-table td{padding:8px 12px;border-bottom:1px solid var(--border);text-align:center}
+.gap-table tr:last-child td{border-bottom:none}
+.gap-cell{display:flex;flex-direction:column;align-items:center;gap:2px}
+.gap-semaforo{width:11px;height:11px;border-radius:50%;display:inline-block}
+.gap-val{font-weight:800;font-size:.78rem}
+.gap-diff{font-size:.62rem;color:var(--muted)}
+.gap-row-nm{font-weight:700;font-size:.74rem}
+.gap-cards-row{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}
+.gap-ods-card{background:var(--card);border-radius:10px;padding:13px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.gap-ods-hd{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.gap-ods-label{font-size:.68rem;font-weight:800;padding:2px 7px;border-radius:4px;color:#fff}
+.gap-ods-name{font-size:.7rem;font-weight:700}
+.gap-mun-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.gap-mun-info{display:flex;flex-direction:column;gap:1px}
+.gap-mun-n{font-size:.67rem;font-weight:600}
+.gap-mun-y{font-size:.6rem;color:var(--muted)}
+.gap-sem{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:3px}
+.gap-val-sm{font-size:.78rem;font-weight:800}
+.target-line{font-size:.65rem;color:var(--blue);font-weight:700;margin-top:6px;
+  background:#eef2fb;padding:4px 8px;border-radius:5px;text-align:center}
+
+/* GESTÃO */
+.gestao-wrap{flex:1;overflow-y:auto;padding:15px}
+.gestao-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.gestao-grid.full{grid-column:1/-1}
+.gest-card{background:var(--card);border-radius:10px;padding:15px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.gest-card h3{font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:11px;display:flex;align-items:center;gap:5px}
+.ed-item{border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-bottom:7px}
+.ed-org{color:var(--accent);font-weight:700;font-size:.63rem}
+.ed-title{font-size:.73rem;font-weight:700;margin:2px 0}
+.ed-desc{font-size:.66rem;color:var(--muted);line-height:1.4}
+.ed-tags{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.ed-tag{font-size:.59rem;padding:2px 7px;border-radius:20px;font-weight:600}
+.tg{background:#c6f6d5;color:#276749}.tb{background:#bee3f8;color:#2c5282}.to{background:#feebc8;color:#7b341e}
+.net-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.net-card{border:1px solid var(--border);border-radius:8px;padding:9px}
+.net-nm{font-size:.73rem;font-weight:700}
+.net-tags{display:flex;gap:3px;flex-wrap:wrap;margin:3px 0}
+.net-t{font-size:.58rem;padding:1px 5px;border-radius:3px;color:#fff;font-weight:700}
+.net-st{font-size:.63rem;color:var(--m4);font-weight:600}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:2px}
+main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-webkit-scrollbar-thumb,
+.sim-sliders::-webkit-scrollbar-thumb,.comp-main::-webkit-scrollbar-thumb,
+.gap-main::-webkit-scrollbar-thumb,.gestao-wrap::-webkit-scrollbar-thumb{background:#cbd5e0}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="h-left">
+    <div class="h-logo">
+      <svg viewBox="0 0 80 80" width="34" height="34" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#003893"/>
+        <path d="M40 2 A38 38 0 0 1 78 40 L40 40Z" fill="#FCC30B"/>
+        <path d="M78 40 A38 38 0 0 1 67 71 L40 40Z" fill="#FD9D24"/>
+        <path d="M67 71 A38 38 0 0 1 40 78 L40 40Z" fill="#3F7E44"/>
+        <path d="M40 78 A38 38 0 0 1 13 71 L40 40Z" fill="#0A97D9"/>
+        <path d="M13 71 A38 38 0 0 1 2 40 L40 40Z" fill="#19486A"/>
+        <path d="M2 40 A38 38 0 0 1 13 9 L40 40Z" fill="#FCC30B" opacity=".5"/>
+        <path d="M13 9 A38 38 0 0 1 40 2 L40 40Z" fill="#FD9D24" opacity=".5"/>
+        <circle cx="40" cy="40" r="21" fill="white"/>
+        <text x="40" y="36" text-anchor="middle" font-size="8" font-weight="800" fill="#003893" font-family="sans-serif">RADAR</text>
+        <text x="40" y="49" text-anchor="middle" font-size="11" font-weight="900" fill="#003893" font-family="sans-serif">ODS</text>
+      </svg>
+    </div>
+    <div class="h-title">
+      <h1>Radar ODS — Municípios da Margem Equatorial Maranhense</h1>
+      <p>Módulo ISM · ODS 7, 11, 13, 14 e 17 · UFMA / FAPEMA Edital 03/2026 Deep Tech Catalyst · Cunha et al., 2025</p>
+    </div>
+  </div>
+  <div class="h-right">
+    <span class="badge">4 Municípios-piloto</span>
+    <span class="badge">Escala 1–5</span>
+    <span class="badge-pill" id="hdr-mun">Barreirinha</span>
+  </div>
+</header>
+
+<!-- ══ TABS ══ -->
+<div class="module-tabs">
+  <button class="tab-btn active"  onclick="sw('ism',this)">📊 Módulo ISM</button>
+  <button class="tab-btn"         onclick="sw('sim',this)">🔬 Simulação de Cenários</button>
+  <button class="tab-btn"         onclick="sw('comp',this)">🏆 Comparativo</button>
+  <button class="tab-btn"         onclick="sw('gap',this)">🎯 Gap Analysis · Agenda 2030</button>
+  <button class="tab-btn"         onclick="sw('gest',this)">🏛️ Gestão Municipal</button>
+</div>
+
+<!-- ══════════ MODULE ISM ══════════ -->
+<div id="mod-ism" class="module-panel active">
+  <aside>
+    <div class="s-section">
+      <div class="s-label">Município-piloto</div>
+      <select id="mun-select">
+        <option>Barreirinha</option><option>Santo Amaro</option>
+        <option>Humberto de Campos</option><option>Tutóia</option>
+      </select>
+    </div>
+    <div class="s-section">
+      <div class="s-label">Filtrar por ODS</div>
+      <button class="ods-pill-all active" id="btn-all" onclick="selAll()">◎ Todos os 5 ODS</button>
+      <div class="ods-grid-sb" id="ods-grid"></div>
+    </div>
+    <div class="s-section">
+      <div class="s-label">Escala ISM-ODS (1–5)</div>
+      <div class="mat-legend">
+        <div class="mat-row"><div class="mat-dot" style="background:var(--m1)"></div><span><b>1 Inicial</b> · sem impl.</span></div>
+        <div class="mat-row"><div class="mat-dot" style="background:var(--m2)"></div><span><b>2 Emergente</b> · pontual</span></div>
+        <div class="mat-row"><div class="mat-dot" style="background:var(--m3)"></div><span><b>3 Em Desenv.</b> · parcial</span></div>
+        <div class="mat-row"><div class="mat-dot" style="background:var(--m4)"></div><span><b>4 Avançado</b> · consol.</span></div>
+        <div class="mat-row"><div class="mat-dot" style="background:var(--m5)"></div><span><b>5 Referência</b> · liderança</span></div>
+      </div>
+    </div>
+    <div style="font-size:.59rem;opacity:.38;text-align:center;margin-top:12px;line-height:1.6">
+      Dados reais: IBGE Censo 2022<br>SINISA 2024 · MUNIC 2023<br>IBAMA/MapBiomas 2022<br>CEMADEN 2024 · ANEEL 2024<br>ANA · MPA · CGU 2023<br><br>
+      ⚠ Barreirinha: estimativa<br>proxy Microrregiões Norte MA<br><br>
+      Modelo: Cunha et al.<br>Marine Policy, 2025
+    </div>
+  </aside>
+  <main id="ism-main">
+    <div class="g4">
+      <div class="kpi"><div class="kl">ISM Geral</div><div class="kv" id="kv-ism">—</div><div class="ks" id="ks-ism">Índice composto 1–5</div></div>
+      <div class="kpi"><div class="kl">Maturidade</div><div class="kv" id="kv-mat" style="font-size:.95rem;padding-top:6px">—</div><div class="ks" id="ks-mat"></div></div>
+      <div class="kpi s"><div class="kl">Melhor ODS</div><div class="kv" id="kv-best">—</div><div class="ks" id="ks-best"></div></div>
+      <div class="kpi d"><div class="kl">ODS Prioritário</div><div class="kv" id="kv-worst">—</div><div class="ks" id="ks-worst"></div></div>
+    </div>
+    <div class="g2">
+      <div class="cc"><h3>🎯 Radar ISM-ODS <span class="chip" id="r-chip">Barreirinha</span></h3><div class="rw"><canvas id="radarChart"></canvas></div></div>
+      <div class="cc"><h3>📋 Indicadores <span class="chip" id="i-chip">ODS 7</span></h3><div class="ind-list" id="ind-list"></div></div>
+    </div>
+    <div class="g2b">
+      <div class="cc"><h3>🗺️ Mapa — ISM por Município-piloto</h3><div id="map"></div></div>
+      <div class="cc"><h3>💡 Sugestões de Ações Prioritárias</h3><div class="act-list" id="act-list"></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════ MODULE SIMULAÇÃO ══════════ -->
+<div id="mod-sim" class="module-panel">
+  <aside>
+    <div class="s-section">
+      <div class="s-label">Município</div>
+      <select id="sim-mun"></select>
+    </div>
+    <div class="s-section">
+      <div class="s-label">O que é simulação?</div>
+      <div style="font-size:.65rem;opacity:.65;line-height:1.6">
+        Ajuste os indicadores com os sliders e veja o impacto no ISM em tempo real. Identifique quais ações geram maior retorno e quais editais de financiamento se tornam acessíveis.
+      </div>
+    </div>
+    <div class="s-section">
+      <div class="s-label">Diferencial do Radar ODS</div>
+      <div style="font-size:.62rem;opacity:.55;line-height:1.6">
+        Conecta diagnóstico → maturidade → ação → financiamento. Inspirado no SDGPortHub (sdgporthub.com).
+      </div>
+    </div>
+  </aside>
+  <main style="display:flex;flex-direction:column;overflow:hidden;padding:15px">
+    <div class="sim-ods-btns" id="sim-ods-btns"></div>
+    <div class="sim-wrap" id="sim-wrap">
+      <div class="cc" style="overflow:hidden;display:flex;flex-direction:column">
+        <h3>⚙️ Ajuste os Indicadores <span class="chip" id="sim-chip">ODS 7</span></h3>
+        <div class="sim-sliders" id="sim-sliders"></div>
+      </div>
+      <div class="cc" style="overflow-y:auto">
+        <h3>📈 Impacto Simulado no ISM</h3>
+        <div class="sim-kpi-row">
+          <div class="sim-kpi"><div class="sim-kpi-l">ISM Atual</div><div class="sim-kv-row"><span class="sim-cur-v" id="sim-cur-v">—</span></div></div>
+          <div class="sim-kpi good"><div class="sim-kpi-l">ISM Simulado</div><div class="sim-kv-row"><span class="sim-new-v" id="sim-new-v" style="color:var(--m4)">—</span><span class="sim-arrow" id="sim-arrow">→</span></div></div>
+        </div>
+        <div class="sim-summary">
+          <div style="font-size:.7rem;font-weight:700;color:var(--blue);margin-bottom:8px">Impacto por ODS</div>
+          <div id="sim-ods-impact"></div>
+        </div>
+        <div style="margin-top:10px;position:relative;height:200px"><canvas id="simChart"></canvas></div>
+        <div class="sim-access" id="sim-access">
+          <h4>🔓 Editais acessíveis com o ISM simulado</h4>
+        </div>
+        <button class="sim-reset" onclick="resetSim()">↺ Restaurar valores atuais</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════ MODULE COMPARATIVO ══════════ -->
+<div id="mod-comp" class="module-panel">
+  <div class="comp-main">
+    <div class="comp-top" id="comp-top"></div>
+    <div class="comp-mid">
+      <div class="cc"><h3>📊 Comparativo ISM por ODS — Todos os Municípios</h3><div class="comp-chart-wrap"><canvas id="compChart"></canvas></div></div>
+      <div class="cc"><h3>🏅 Ranking Geral</h3>
+        <table class="rank-table" id="rank-table">
+          <thead><tr>
+            <th>#</th><th class="left">Município</th>
+            <th>ODS 7</th><th>ODS 11</th><th>ODS 13</th><th>ODS 14</th><th>ODS 17</th>
+            <th>ISM</th><th>Maturidade</th>
+          </tr></thead>
+          <tbody id="rank-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="comp-bottom" id="comp-bottom"></div>
+  </div>
+</div>
+
+<!-- ══════════ MODULE GAP ANALYSIS ══════════ -->
+<div id="mod-gap" class="module-panel">
+  <div class="gap-main">
+    <div class="gap-header-row" id="gap-header"></div>
+    <div class="gap-matrix">
+      <h3>🧮 Matriz Gap ISM-ODS · Meta Agenda 2030 = 4,0</h3>
+      <table class="gap-table" id="gap-table">
+        <thead><tr>
+          <th class="left" style="color:var(--blue)">Município</th>
+          <th>ODS 7<br><small style="opacity:.6">Energia</small></th>
+          <th>ODS 11<br><small style="opacity:.6">Cidades</small></th>
+          <th>ODS 13<br><small style="opacity:.6">Clima</small></th>
+          <th>ODS 14<br><small style="opacity:.6">Oceanos</small></th>
+          <th>ODS 17<br><small style="opacity:.6">Parcerias</small></th>
+          <th>ISM Geral</th>
+          <th>Gap p/ Meta</th>
+          <th>Previsão 2030</th>
+        </tr></thead>
+        <tbody id="gap-tbody"></tbody>
+      </table>
+    </div>
+    <div class="gap-cards-row" id="gap-cards"></div>
+  </div>
+</div>
+
+<!-- ══════════ MODULE GESTÃO ══════════ -->
+<div id="mod-gest" class="module-panel">
+  <div class="gestao-wrap">
+    <div class="gestao-grid">
+      <div class="gest-card">
+        <h3>🔍 Editais de Financiamento Climático</h3>
+        <div class="ed-item"><div class="ed-org">BNDES</div><div class="ed-title">BNDES Clima — Infraestrutura Sustentável Municipal</div><div class="ed-desc">Adaptação climática, energia renovável e saneamento. ISM-ODS mín. 2,5.</div><div class="ed-tags"><span class="ed-tag tg">ODS 7 · 13</span><span class="ed-tag tb">R$ 500k – 5mi</span><span class="ed-tag to">dez/2026</span></div></div>
+        <div class="ed-item"><div class="ed-org">BID — Banco Interamericano de Desenvolvimento</div><div class="ed-title">BID Cidades Sustentáveis — Municípios Costeiros</div><div class="ed-desc">Gestão costeira, manguezais e resiliência climática. ISM-ODS mín. 2,8.</div><div class="ed-tags"><span class="ed-tag tg">ODS 11 · 14</span><span class="ed-tag tb">USD 1–10mi</span><span class="ed-tag to">mar/2027</span></div></div>
+        <div class="ed-item"><div class="ed-org">Fundo Amazônia / BNDES</div><div class="ed-title">Conservação de Manguezais e Ecossistemas Costeiros</div><div class="ed-desc">Preservação, monitoramento e pesca sustentável. ISM-ODS 14 mín. 2,0.</div><div class="ed-tags"><span class="ed-tag tg">ODS 14</span><span class="ed-tag tb">R$ 200k – 2mi</span><span class="ed-tag to">abr/2027</span></div></div>
+        <div class="ed-item"><div class="ed-org">FAPEMA · Edital 03/2026</div><div class="ed-title">Deep Tech Catalyst — Radar ODS</div><div class="ed-desc">Desenvolvimento de tecnologias sociais e soluções digitais orientadas à ODS.</div><div class="ed-tags"><span class="ed-tag tg">ODS 17</span><span class="ed-tag tb">R$ 198.910</span><span class="ed-tag to">Vigente</span></div></div>
+        <div class="ed-item"><div class="ed-org">FNDR — Fundo Nacional de Desenvolvimento Regional</div><div class="ed-title">Infraestrutura Urbana e Saneamento — Nordeste</div><div class="ed-desc">Saneamento básico e habitação em municípios de baixo IDH.</div><div class="ed-tags"><span class="ed-tag tg">ODS 11</span><span class="ed-tag tb">R$ 1–20mi</span><span class="ed-tag to">set/2026</span></div></div>
+      </div>
+      <div class="gest-card">
+        <h3>🤖 Apoio IA — Estratégias por Município</h3>
+        <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Sugestões calibradas ao ISM-ODS de cada município e aos editais vigentes.</div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Barreirinha</strong><span class="chip-ods" style="background:#0A97D9">ODS 14</span></div><div style="font-size:.68rem;color:var(--muted)">Prioridade: iniciar mapeamento de manguezais (nível 1 → 2). Submeter projeto ao Fundo Amazônia até abr/2027. Parceria recomendada: IBAMA/UFMA.</div></div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Santo Amaro</strong><span class="chip-ods" style="background:#FCC30B">ODS 7</span></div><div style="font-size:.68rem;color:var(--muted)">Maior gap: energia renovável. Instalar solar em escolas e UBS via ANEEL PROCEL. Prazo: BNDES Clima dez/2026.</div></div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Humberto de Campos</strong><span class="chip-ods" style="background:#19486A">ODS 17</span></div><div style="font-size:.68rem;color:var(--muted)">Boa base em ODS 14. Avançar em parcerias: formalizar convênio com UFMA e candidatar ao BID Cidades Sustentáveis mar/2027.</div></div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Tutóia</strong><span class="chip-ods" style="background:#3F7E44">ODS 13</span></div><div style="font-size:.68rem;color:var(--muted)">Município mais desenvolvido. Ampliar PAC com dados CEMADEN e publicar como dado aberto. Candidatar ao Prêmio Cidades Sustentáveis.</div></div>
+      </div>
+      <div class="gest-card">
+        <h3>📝 Diagnóstico Municipal — Questionário ISM</h3>
+        <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Aplicado durante visitas técnicas aos municípios-piloto. Valida e complementa os dados de fontes oficiais.</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:#f7fafc;border-radius:7px;padding:10px;font-size:.7rem"><strong>ODS 7 — Energia:</strong> <span style="color:var(--muted)">O município possui programa de energia renovável? Qual % de prédios públicos com eficiência energética certificada?</span></div>
+          <div style="background:#f7fafc;border-radius:7px;padding:10px;font-size:.7rem"><strong>ODS 11 — Cidades:</strong> <span style="color:var(--muted)">Cobertura de esgotamento sanitário (%)? Existe Plano Diretor Municipal atualizado?</span></div>
+          <div style="background:#f7fafc;border-radius:7px;padding:10px;font-size:.7rem"><strong>ODS 13 — Clima:</strong> <span style="color:var(--muted)">O município possui PAC? Há sistema de alertas para eventos extremos integrado ao CEMADEN?</span></div>
+          <div style="background:#f7fafc;border-radius:7px;padding:10px;font-size:.7rem"><strong>ODS 14 — Água:</strong> <span style="color:var(--muted)">% de manguezais preservados? Candidatura ativa à Bandeira Azul?</span></div>
+          <div style="background:#f7fafc;border-radius:7px;padding:10px;font-size:.7rem"><strong>ODS 17 — Parcerias:</strong> <span style="color:var(--muted)">Acessa financiamentos do BNDES/BID? Parcerias institucionais ativas com UFMA?</span></div>
+        </div>
+      </div>
+      <div class="gest-card">
+        <h3>🌐 Rede Colaborativa Municipal</h3>
+        <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Troca de boas práticas entre os municípios da Margem Equatorial Maranhense.</div>
+        <div class="net-grid">
+          <div class="net-card"><div class="net-nm">🏘 Barreirinha</div><div class="net-tags"><span class="net-t" style="background:var(--ods14)">ODS 14</span><span class="net-t" style="background:var(--ods13)">ODS 13</span></div><div style="font-size:.65rem;color:var(--muted)">Gestão de manguezais e vulnerabilidade costeira</div><div class="net-st">● Ativa</div></div>
+          <div class="net-card"><div class="net-nm">🏘 Santo Amaro</div><div class="net-tags"><span class="net-t" style="background:var(--ods7)">ODS 7</span><span class="net-t" style="background:var(--ods11)">ODS 11</span></div><div style="font-size:.65rem;color:var(--muted)">Energia solar e saneamento rural</div><div class="net-st">● Ativa</div></div>
+          <div class="net-card"><div class="net-nm">🏘 Humberto de Campos</div><div class="net-tags"><span class="net-t" style="background:var(--ods14)">ODS 14</span><span class="net-t" style="background:var(--ods17)">ODS 17</span></div><div style="font-size:.65rem;color:var(--muted)">Pesca sustentável e parcerias</div><div class="net-st">● Ativa</div></div>
+          <div class="net-card"><div class="net-nm">🏘 Tutóia</div><div class="net-tags"><span class="net-t" style="background:var(--ods11)">ODS 11</span><span class="net-t" style="background:var(--ods13)">ODS 13</span><span class="net-t" style="background:var(--ods17)">ODS 17</span></div><div style="font-size:.65rem;color:var(--muted)">Cidades sustentáveis e captação</div><div class="net-st">● Ativa</div></div>
+        </div>
+        <div style="margin-top:10px;padding:9px;background:#eef2fb;border-radius:7px;font-size:.68rem;color:var(--blue)">
+          <strong>📢 Tutóia:</strong> "Aprovação de projeto LED via FNDR. ISM ODS 7 subiu de 2,6 → 3,2. Metodologia disponível para demais municípios." <em style="color:var(--muted)">há 3 dias</em>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SCRIPT ════════════════ -->
+<script>
+// ── DATA ──────────────────────────────────────────
+const ODS_LIST = [
+  {id:7,  name:"Energia Limpa e Acessível",   short:"Energia",   color:"#FCC30B"},
+  {id:11, name:"Cidades e Comunidades Sust.", short:"Cidades",   color:"#FD9D24"},
+  {id:13, name:"Ação Climática",              short:"Clima",     color:"#3F7E44"},
+  {id:14, name:"Vida na Água",                short:"Oceanos",   color:"#0A97D9"},
+  {id:17, name:"Parcerias e Meios de Impl.",  short:"Parcerias", color:"#19486A"},
+];
+const MUNS = ["Barreirinha","Santo Amaro","Humberto de Campos","Tutóia"];
+const MAT  = ["","Inicial","Emergente","Em Desenvolvimento","Avançado","Referência"];
+const MATC = ["","#e53e3e","#dd6b20","#d69e2e","#38a169","#2f855a"];
+
+const INDICATORS = {
+  7: [
+    {n:"Cobertura de energia elétrica residencial (%)",   f:"IBGE Censo",            y:"2022"},
+    {n:"Penetração de energia solar distribuída",          f:"ANEEL SIGEL",           y:"2024"},
+    {n:"Eficiência energética em prédios públicos",        f:"IBGE MUNIC",            y:"2023"},
+    {n:"Iluminação pública LED/sustentável",               f:"IBGE MUNIC",            y:"2023"},
+    {n:"Programa municipal de energia renovável",          f:"IBGE MUNIC",            y:"2023"},
+  ],
+  11:[
+    {n:"Cobertura de esgotamento sanitário (%)",           f:"SINISA / IBGE Censo",   y:"2024/2022"},
+    {n:"Acesso a moradia adequada (%)",                    f:"IBGE Censo",            y:"2022"},
+    {n:"Transporte público coletivo municipal",            f:"IBGE MUNIC",            y:"2023"},
+    {n:"Gestão integrada de resíduos sólidos (%)",         f:"SINISA / IBGE Censo",   y:"2024/2022"},
+    {n:"Áreas verdes e espaços públicos",                  f:"IBGE MUNIC",            y:"2023"},
+  ],
+  13:[
+    {n:"Plano municipal de adaptação climática",           f:"IBGE MUNIC",            y:"2023"},
+    {n:"Sistema de alertas para eventos extremos",         f:"CEMADEN / SINISA",      y:"2024"},
+    {n:"Vulnerabilidade climática mapeada",                f:"CEMADEN",               y:"2024"},
+    {n:"Cobertura vegetal preservada (%)",                 f:"IBAMA / MapBiomas",     y:"2022"},
+    {n:"Iniciativas de redução de emissões",               f:"IBAMA / SEMAR-MA",      y:"2023"},
+  ],
+  14:[
+    {n:"Preservação de manguezais (% área orig.)",         f:"IBAMA / MapBiomas",     y:"2022"},
+    {n:"Gestão pesqueira sustentável certificada",         f:"MPA / IBAMA",           y:"2023"},
+    {n:"Qualidade da água costeira monitorada",            f:"ANA",                   y:"2023"},
+    {n:"Certificação Bandeira Azul em praias",             f:"FEE Brasil / Abratur",  y:"2024"},
+    {n:"Monitoramento de ecossistemas marinhos",           f:"IBAMA / ICMBio",        y:"2023"},
+  ],
+  17:[
+    {n:"Acesso a financiamentos climáticos",               f:"TCU / SEFAZ-MA",        y:"2024"},
+    {n:"Parcerias institucionais ativas",                  f:"IBGE MUNIC / SINISA",   y:"2023"},
+    {n:"Capacidade de reporte ODS (completude SINISA)",    f:"SINISA",                y:"2024"},
+    {n:"Participação em redes colaborativas",              f:"IBGE MUNIC / SINISA",   y:"2023"},
+    {n:"Transparência e dados abertos municipais",         f:"CGU Esc. Brasil Transp.",y:"2023"},
+  ],
+};
+
+// Scores baseados em dados reais por fonte oficial
+// ODS 7:  [energia_elétrica, solar_distribuída, efic_prédios, LED_público, prog_renovável]
+// ODS 11: [esgotamento_san, moradia_adequada, transporte, resíduos_sólidos, áreas_verdes]
+// ODS 13: [plano_adaptação, alertas_extremos, vuln_mapeada, cobert_vegetal, red_emissões]
+// ODS 14: [manguezais, gestão_pesqueira, qualid_água, bandeira_azul, monit_ecossist]
+// ODS 17: [financ_climáticos, parcerias_inst, reporte_ODS, redes_colab, transparência]
+// * Barreirinha (IBGE 2101608): dados proxy Microrregião Norte Maranhense — não disponível em IAS/SINISA
+const SCORES = {
+  "Barreirinha":        {7:[3,1,1,1,1], 11:[2,2,1,2,2], 13:[2,1,1,2,1], 14:[2,2,1,1,1], 17:[1,2,3,2,1]},
+  "Santo Amaro":        {7:[2,1,1,1,1], 11:[1,1,1,2,2], 13:[2,1,1,2,1], 14:[2,2,1,1,1], 17:[1,2,2,2,1]},
+  "Humberto de Campos": {7:[3,1,1,2,1], 11:[1,2,1,2,2], 13:[1,1,1,3,1], 14:[3,2,1,1,1], 17:[1,1,2,1,1]},
+  "Tutóia":             {7:[4,1,1,2,1], 11:[1,2,1,3,3], 13:[1,1,1,3,1], 14:[3,2,1,1,2], 17:[1,2,2,2,2]},
+};
+
+// Annual growth rate trend (approximate for gap projection)
+const TREND = 0.15; // pts/year
+
+const ACTIONS = {
+  7:{1:{t:"Iniciar diagnóstico energético",b:"Mapear cobertura elétrica e cadastrar no Luz para Todos."},
+     2:{t:"Desenvolver Plano Municipal de Energia",b:"Elaborar metas de energia renovável e contatar ANEEL."},
+     3:{t:"Ampliar energia solar em prédios públicos",b:"Instalar painéis em escolas e UBS. Submeter ao BNDES Clima."},
+     4:{t:"Certificar e escalar eficiência energética",b:"Publicar relatório de desempenho. Liderar programa regional."},
+     5:{t:"Liderar rede regional de energia renovável",b:"Compartilhar metodologia e candidatar a prêmios nacionais."}},
+  11:{1:{t:"Realizar diagnóstico de saneamento",b:"Levantar cobertura via SNIS. Solicitar recursos ao FNDR."},
+      2:{t:"Elaborar Plano Municipal de Saneamento",b:"Desenvolver PMSB e mapear vulnerabilidade habitacional."},
+      3:{t:"Implementar coleta seletiva",b:"Criar programa de resíduos e buscar cofinanciamento do BID."},
+      4:{t:"Expandir saneamento e áreas verdes",b:"Atingir 70%+ de cobertura. Criar parques urbanos."},
+      5:{t:"Referência estadual em cidades sustentáveis",b:"Publicar relatório ODS 11 como dado aberto."}},
+  13:{1:{t:"Mapear vulnerabilidade climática",b:"Acessar Atlas do CEMADEN. Identificar zonas de risco costeiro."},
+      2:{t:"Elaborar Plano de Adaptação Climática",b:"Desenvolver PAC com apoio técnico da UFMA."},
+      3:{t:"Implementar infraestrutura verde",b:"Criar zonas de amortecimento. Submeter ao Fundo Amazônia."},
+      4:{t:"Monitorar e reportar emissões",b:"Publicar inventário municipal de emissões."},
+      5:{t:"Liderar rede de adaptação climática",b:"Compartilhar PAC e publicar artigo com a UFMA."}},
+  14:{1:{t:"Cadastrar e mapear manguezais",b:"Mapeamento via IBAMA. Iniciar educação ambiental com pescadores."},
+      2:{t:"Iniciar gestão pesqueira",b:"Estruturar Comitê de Gestão Pesqueira com MPA."},
+      3:{t:"Iniciar candidatura Bandeira Azul",b:"Preparar documentação e monitorar com pesquisadores da UFMA."},
+      4:{t:"Certificar praias e proteger estoques",b:"Obter Bandeira Azul. Implementar acordos de pesca sustentável."},
+      5:{t:"Referência em gestão costeira",b:"Publicar modelo como dado aberto. Liderar rede da Margem Equatorial."}},
+  17:{1:{t:"Mapear instrumentos de financiamento",b:"Identificar editais BNDES/BID/Fundo Amazônia. Capacitar gestores."},
+      2:{t:"Estabelecer parceria com UFMA",b:"Formalizar convênio UFMA/FAPEMA. Participar da rede Radar ODS."},
+      3:{t:"Submeter projetos a editais climáticos",b:"Elaborar e submeter projeto ao BNDES Clima. Criar setor de ODS."},
+      4:{t:"Construir portfólio de parcerias",b:"Documentar parcerias. Reportar progresso ODS ao IBGE."},
+      5:{t:"Liderar articulação regional de ODS",b:"Coordenar rede de municípios costeiros. Publicar relatório anual."}}
+};
+
+// ── STATE ──────────────────────────────────────────
+let selMun  = "Barreirinha";
+let selODS  = null;
+let radarCh = null;
+let simCh   = null;
+let compCh  = null;
+let leafMap = null;
+let mapMk   = {};
+let simODS  = 7;
+let simScores = {};
+
+const COORDS = {
+  "Barreirinha":[-2.788,-45.065],
+  "Santo Amaro":[-2.811,-43.353],
+  "Humberto de Campos":[-2.613,-43.466],
+  "Tutóia":[-2.766,-42.274]
+};
+
+// ── HELPERS ───────────────────────────────────────
+function avg(arr){return arr.reduce((a,b)=>a+b,0)/arr.length}
+function odsAvg(mun,ods){return avg(SCORES[mun][ods])}
+function ismGlobal(mun){return avg(ODS_LIST.map(o=>odsAvg(mun,o.id)))}
+function matLv(v){return v<1.5?1:v<2.5?2:v<3.5?3:v<4.5?4:5}
+
+// ── INIT ──────────────────────────────────────────
+function init(){
+  buildODSGrid();
+  initMap();
+  fillSelects();
+  initSim();
+  buildComp();
+  buildGap();
+  updateISM();
+}
+
+function fillSelects(){
+  ['mun-select','sim-mun'].forEach(id=>{
+    const el=document.getElementById(id);
+    MUNS.forEach(m=>{const o=document.createElement('option');o.value=m;o.text=m;el.appendChild(o)});
+  });
+  document.getElementById('mun-select').addEventListener('change',e=>{selMun=e.target.value;updateISM()});
+  document.getElementById('sim-mun').addEventListener('change',e=>{initSim(e.target.value)});
+}
+
+// ── ODS GRID ──────────────────────────────────────
+function buildODSGrid(){
+  const g=document.getElementById('ods-grid');
+  ODS_LIST.forEach(o=>{
+    const el=document.createElement('div');
+    el.className='ods-pill';el.id='op-'+o.id;
+    el.innerHTML=`<div class="ods-dot" style="background:${o.color}"></div><span>ODS ${o.id} — ${o.short}</span>`;
+    el.addEventListener('click',()=>toggleODS(o.id));g.appendChild(el);
+  });
+}
+function toggleODS(id){
+  selODS=selODS===id?null:id;
+  document.querySelectorAll('.ods-pill').forEach(p=>p.classList.remove('active'));
+  document.getElementById('btn-all').classList.toggle('active',selODS===null);
+  if(selODS)document.getElementById('op-'+selODS).classList.add('active');
+  updateISM();
+}
+function selAll(){selODS=null;document.querySelectorAll('.ods-pill').forEach(p=>p.classList.remove('active'));document.getElementById('btn-all').classList.add('active');updateISM();}
+
+// ── UPDATE ISM ────────────────────────────────────
+function updateISM(){
+  document.getElementById('hdr-mun').textContent=selMun;
+  document.getElementById('r-chip').textContent=selMun;
+  updateKPIs();updateRadar();updateIndicators();updateActions();updateMap();
+}
+
+function updateKPIs(){
+  const ism=ismGlobal(selMun);const lv=matLv(ism);
+  const best=ODS_LIST.reduce((a,o)=>odsAvg(selMun,o.id)>odsAvg(selMun,a.id)?o:a);
+  const wors=ODS_LIST.reduce((a,o)=>odsAvg(selMun,o.id)<odsAvg(selMun,a.id)?o:a);
+  document.getElementById('kv-ism').textContent=ism.toFixed(2);
+  document.getElementById('ks-ism').textContent='ISM-ODS · '+selMun;
+  document.getElementById('kv-mat').innerHTML=`<span style="color:${MATC[lv]}">${MAT[lv]}</span>`;
+  document.getElementById('ks-mat').textContent='Nível '+lv+' de 5';
+  document.getElementById('kv-best').textContent='ODS '+best.id;
+  document.getElementById('ks-best').innerHTML=`<strong style="color:var(--m4)">${odsAvg(selMun,best.id).toFixed(2)}</strong> — ${best.short}`;
+  document.getElementById('kv-worst').textContent='ODS '+wors.id;
+  document.getElementById('ks-worst').innerHTML=`<strong style="color:var(--m1)">${odsAvg(selMun,wors.id).toFixed(2)}</strong> — ${wors.short}`;
+}
+
+function updateRadar(){
+  const avgs=ODS_LIST.map(o=>odsAvg(selMun,o.id));
+  const globalAvg=ODS_LIST.map(o=>avg(MUNS.map(m=>odsAvg(m,o.id))));
+  const display=selODS?avgs.map((s,i)=>ODS_LIST[i].id===selODS?s:s*0.15):avgs;
+  if(radarCh)radarCh.destroy();
+  const ctx=document.getElementById('radarChart').getContext('2d');
+  radarCh=new Chart(ctx,{type:'radar',data:{
+    labels:ODS_LIST.map(o=>`ODS ${o.id}\n${o.short}`),
+    datasets:[
+      {label:selMun,data:display,backgroundColor:'rgba(0,158,219,.18)',borderColor:'#009EDB',
+       borderWidth:2.5,pointBackgroundColor:ODS_LIST.map(o=>o.color),
+       pointBorderColor:'#fff',pointBorderWidth:1.5,pointRadius:5},
+      {label:'Média (4 mun.)',data:globalAvg,backgroundColor:'rgba(0,56,147,.05)',
+       borderColor:'rgba(0,56,147,.38)',borderWidth:1.5,borderDash:[5,3],pointRadius:2,
+       pointBackgroundColor:'rgba(0,56,147,.4)',pointBorderColor:'transparent'},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{r:{min:0,max:5,ticks:{stepSize:1,font:{size:8},color:'#bbb',backdropColor:'transparent'},
+      pointLabels:{font:{size:8.5,weight:'600'},color:(c)=>ODS_LIST[c.index]?.color||'#333'},
+      grid:{color:'rgba(0,0,0,.07)'},angleLines:{color:'rgba(0,0,0,.08)'}}},
+    plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:10,usePointStyle:true}},
+      tooltip:{callbacks:{title:c=>ODS_LIST[c[0]?.dataIndex]?.name||'',
+        label:c=>`${c.dataset.label}: ${Number(c.raw).toFixed(2)} pts`}}}}});
+}
+
+function updateIndicators(){
+  const dODS=selODS?ODS_LIST.find(o=>o.id===selODS):ODS_LIST[0];
+  document.getElementById('i-chip').textContent=`ODS ${dODS.id} — ${dODS.short}`;
+  const inds=INDICATORS[dODS.id];const sc=SCORES[selMun][dODS.id];
+  document.getElementById('ind-list').innerHTML=inds.map((ind,i)=>{
+    const s=sc[i];const lv=matLv(s);const c=MATC[lv];const pct=(s/5)*100;
+    return`<div class="ind-item">
+      <div class="ind-hd"><span class="ind-nm">${ind.n}</span><span class="ind-ft">${ind.f}${ind.y?' · '+ind.y:''}</span></div>
+      <div class="ind-sr"><span class="mat-badge" style="background:${c}">${MAT[lv]}</span>
+      <div class="bt"><div class="bf" style="width:${pct}%;background:${c}"></div></div>
+      <strong style="font-size:.78rem;min-width:18px;text-align:right">${s}</strong></div></div>`;
+  }).join('');
+}
+
+function updateActions(){
+  const show=selODS?ODS_LIST.filter(o=>o.id===selODS):ODS_LIST;
+  document.getElementById('act-list').innerHTML=show.map(o=>{
+    const lv=matLv(odsAvg(selMun,o.id));const a=ACTIONS[o.id][lv];
+    return`<div class="act-card" style="border-left-color:${o.color};background:${o.color}12">
+      <span class="act-tag" style="background:${o.color}">ODS ${o.id}</span>
+      <div class="act-t">${a.t}</div><div class="act-b">${a.b}</div>
+      <div class="act-f">Maturidade: <span style="color:${MATC[lv]};font-weight:700">${MAT[lv]} (${odsAvg(selMun,o.id).toFixed(1)})</span></div></div>`;
+  }).join('');
+}
+
+// ── MAP ───────────────────────────────────────────
+function initMap(){
+  leafMap=L.map('map',{center:[-2.75,-43.5],zoom:7});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {attribution:'© OpenStreetMap',maxZoom:14}).addTo(leafMap);
+  const leg=L.control({position:'bottomright'});
+  leg.onAdd=()=>{const d=L.DomUtil.create('div','map-legend');
+    d.innerHTML=`<strong style="font-size:.7rem;display:block;margin-bottom:4px">ISM Geral</strong>
+    <div class="lr"><div class="ld" style="background:#38a169"></div>≥ 3,0 — Em Desenv.</div>
+    <div class="lr"><div class="ld" style="background:#d69e2e"></div>2,0–2,9 — Emergente</div>
+    <div class="lr"><div class="ld" style="background:#e53e3e"></div>&lt; 2,0 — Inicial</div>`;
+    return d;};
+  leg.addTo(leafMap);
+}
+function mcol(v){return v>=3?'#38a169':v>=2?'#d69e2e':'#e53e3e'}
+function updateMap(){
+  Object.values(mapMk).forEach(m=>leafMap.removeLayer(m));mapMk={};
+  MUNS.forEach(mun=>{
+    const c=COORDS[mun];if(!c)return;
+    const sc=selODS?odsAvg(mun,selODS):ismGlobal(mun);
+    const lv=matLv(sc);const col=mcol(sc);const isSel=mun===selMun;
+    const mk=L.circleMarker(c,{radius:isSel?17:10,color:isSel?'#001f5b':'#fff',
+      weight:isSel?3:1.5,fillColor:col,fillOpacity:isSel?1:.82});
+    mk.bindPopup(`<strong>${mun}</strong><br>
+      <span style="color:#666;font-size:.68rem">${selODS?'ODS '+selODS:'ISM Geral'}</span><br>
+      <span style="font-size:1.1rem;font-weight:800;color:${col}">${sc.toFixed(2)}</span>
+      <span style="color:#666;font-size:.7rem"> — ${MAT[lv]}</span><br>
+      <span style="color:#003893;font-size:.68rem;cursor:pointer;text-decoration:underline"
+        onclick="document.getElementById('mun-select').value='${mun}';selMun='${mun}';updateISM()">Ver detalhes →</span>`);
+    mk.addTo(leafMap);mapMk[mun]=mk;
+  });
+}
+
+// ══ SIMULAÇÃO ════════════════════════════════════
+function initSim(mun){
+  const m=mun||document.getElementById('sim-mun').value||'Barreirinha';
+  // Deep copy scores for simulation
+  simScores={};
+  MUNS.forEach(mn=>{simScores[mn]={};ODS_LIST.forEach(o=>{simScores[mn][o.id]=[...SCORES[mn][o.id]]});});
+  // Build ODS buttons
+  const btns=document.getElementById('sim-ods-btns');
+  btns.innerHTML=ODS_LIST.map(o=>`<button class="sim-ods-btn${o.id===simODS?' active':''}"
+    style="${o.id===simODS?`background:${o.color};color:#fff`:''}"
+    onclick="switchSimODS(${o.id},'${o.color}',this)">ODS ${o.id} — ${o.short}</button>`).join('');
+  renderSimSliders(m,simODS);
+  updateSimChart(m);
+}
+function switchSimODS(id,col,btn){
+  simODS=id;
+  document.querySelectorAll('.sim-ods-btn').forEach(b=>{b.classList.remove('active');b.style.background='';b.style.color='';});
+  btn.classList.add('active');btn.style.background=col;btn.style.color='#fff';
+  const m=document.getElementById('sim-mun').value;
+  renderSimSliders(m,id);updateSimChart(m);
+}
+function renderSimSliders(mun,odsId){
+  const inds=INDICATORS[odsId];
+  document.getElementById('sim-chip').textContent=`ODS ${odsId}`;
+  document.getElementById('sim-sliders').innerHTML=inds.map((ind,i)=>{
+    const cur=SCORES[mun][odsId][i];const sim=simScores[mun][odsId][i];
+    const delta=sim-cur;const dc=delta>0?'up':'same';
+    return`<div class="sim-ind">
+      <div class="sim-ind-top">
+        <span class="sim-ind-nm">${ind.n}</span>
+        <div class="sim-scores">
+          <span class="sim-cur">Atual: ${cur}</span>
+          <strong class="sim-new" id="sv-${odsId}-${i}">${sim}</strong>
+          <span class="sim-delta ${dc}" id="sd-${odsId}-${i}">${delta>0?'+'+delta:delta===0?'=':delta}</span>
+        </div>
+      </div>
+      <input type="range" min="1" max="5" step="1" value="${sim}"
+        oninput="onSimSlide(${odsId},${i},this.value,'${mun}')">
+      <div style="display:flex;justify-content:space-between;font-size:.58rem;color:var(--muted);margin-top:2px">
+        <span>1 Inicial</span><span>3 Em Desenv.</span><span>5 Referência</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function onSimSlide(odsId,idx,val,mun){
+  simScores[mun][odsId][idx]=parseInt(val);
+  const cur=SCORES[mun][odsId][idx];const sim=parseInt(val);const delta=sim-cur;
+  const dc=delta>0?'up':'same';
+  document.getElementById(`sv-${odsId}-${idx}`).textContent=sim;
+  const sd=document.getElementById(`sd-${odsId}-${idx}`);
+  sd.textContent=delta>0?'+'+delta:delta===0?'=':delta;sd.className='sim-delta '+dc;
+  updateSimChart(mun);
+}
+function updateSimChart(mun){
+  const curISM=ismGlobal(mun);
+  const simISMVal=avg(ODS_LIST.map(o=>avg(simScores[mun][o.id])));
+  const curODS=ODS_LIST.map(o=>odsAvg(mun,o.id));
+  const simODSVals=ODS_LIST.map(o=>avg(simScores[mun][o.id]));
+  document.getElementById('sim-cur-v').textContent=curISM.toFixed(2);
+  const nv=document.getElementById('sim-new-v');nv.textContent=simISMVal.toFixed(2);
+  const delta=simISMVal-curISM;
+  nv.style.color=delta>0?'var(--m4)':delta<0?'var(--m1)':'var(--muted)';
+  document.getElementById('sim-arrow').textContent=delta>0.01?'↑':delta<-0.01?'↓':'→';
+  // ODS impact
+  document.getElementById('sim-ods-impact').innerHTML=ODS_LIST.map(o=>{
+    const c=odsAvg(mun,o.id);const s=avg(simScores[mun][o.id]);const d=s-c;
+    return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span class="chip-ods" style="background:${o.color};width:52px;text-align:center">ODS ${o.id}</span>
+      <div class="bt" style="flex:1"><div class="bf" style="width:${(s/5)*100}%;background:${o.color}"></div></div>
+      <span style="font-size:.72rem;font-weight:800;min-width:30px">${s.toFixed(1)}</span>
+      <span style="font-size:.65rem;font-weight:700;color:${d>0?'var(--m4)':d<0?'var(--m1)':'var(--muted)'}">
+        ${d>0?'+'+d.toFixed(1):d.toFixed(1)}</span></div>`;
+  }).join('');
+  // Radar
+  if(simCh)simCh.destroy();
+  const ctx=document.getElementById('simChart').getContext('2d');
+  simCh=new Chart(ctx,{type:'radar',data:{
+    labels:ODS_LIST.map(o=>`ODS ${o.id}`),
+    datasets:[
+      {label:'Atual',data:curODS,backgroundColor:'rgba(0,56,147,.12)',borderColor:'rgba(0,56,147,.5)',
+       borderWidth:1.5,borderDash:[4,3],pointRadius:3,pointBackgroundColor:'rgba(0,56,147,.5)'},
+      {label:'Simulado',data:simODSVals,backgroundColor:'rgba(56,161,105,.18)',borderColor:'#38a169',
+       borderWidth:2,pointBackgroundColor:ODS_LIST.map(o=>o.color),pointRadius:5,pointBorderColor:'#fff',pointBorderWidth:1.5}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{r:{min:0,max:5,ticks:{stepSize:1,font:{size:8},color:'#bbb',backdropColor:'transparent'},
+      pointLabels:{font:{size:8,weight:'600'}},
+      grid:{color:'rgba(0,0,0,.07)'},angleLines:{color:'rgba(0,0,0,.08)'}}},
+    plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8,usePointStyle:true}}}}});
+  // Edital access
+  const ism=simISMVal;
+  const access=[];
+  if(ism>=2.5)access.push({org:'BNDES',nm:'BNDES Clima',cond:`ISM ≥ 2,5 — você está em ${ism.toFixed(2)}`});
+  if(ism>=2.8)access.push({org:'BID',nm:'BID Cidades Sustentáveis',cond:`ISM ≥ 2,8 — você está em ${ism.toFixed(2)}`});
+  if(avg(simScores[mun][14])>=2.0)access.push({org:'Fundo Amazônia',nm:'Conservação de Manguezais',cond:`ISM-ODS14 ≥ 2,0 — você está em ${avg(simScores[mun][14]).toFixed(2)}`});
+  const ae=document.getElementById('sim-access');
+  ae.innerHTML=`<h4 style="font-size:.72rem;font-weight:700;color:var(--blue);margin-bottom:6px">🔓 Editais acessíveis com ISM simulado (${ism.toFixed(2)})</h4>`;
+  if(access.length===0){ae.innerHTML+=`<div style="font-size:.68rem;color:var(--muted)">Nenhum edital desbloqueado ainda. Aumente o ISM para ≥ 2,5.</div>`;}
+  else{access.forEach(e=>{ae.innerHTML+=`<div class="sim-edital"><div class="ed-org">${e.org}</div><div class="ed-nm">${e.nm}</div><div class="ed-cond" style="font-size:.64rem;color:var(--m4)">✔ ${e.cond}</div></div>`;});}
+}
+function resetSim(){const m=document.getElementById('sim-mun').value;initSim(m);}
+
+// ══ COMPARATIVO ══════════════════════════════════
+function buildComp(){
+  // Top cards
+  const ranking=[...MUNS].sort((a,b)=>ismGlobal(b)-ismGlobal(a));
+  document.getElementById('comp-top').innerHTML=ranking.map((mun,i)=>{
+    const ism=ismGlobal(mun);const lv=matLv(ism);
+    return`<div class="comp-mun-card" onclick="highlightComp('${mun}')">
+      <div style="font-size:.62rem;color:var(--muted);font-weight:700">#${i+1}</div>
+      <div class="comp-mun-nm">${mun}</div>
+      <div class="comp-ism" style="color:${MATC[lv]}">${ism.toFixed(2)}</div>
+      <div class="comp-mat" style="color:${MATC[lv]}">${MAT[lv]}</div>
+      <div class="comp-bars">${ODS_LIST.map(o=>{const s=odsAvg(mun,o.id);return`<div class="comp-bar-mini" title="ODS ${o.id}: ${s.toFixed(1)}"><div class="comp-bar-fill" style="height:${s/5*100}%;background:${o.color}"></div></div>`}).join('')}</div>
+    </div>`;}).join('');
+  // Ranking table
+  const tbody=document.getElementById('rank-body');
+  tbody.innerHTML=ranking.map((mun,i)=>{
+    const ism=ismGlobal(mun);const lv=matLv(ism);
+    return`<tr>
+      <td class="rank-num">${i+1}</td>
+      <td style="font-weight:600">${mun}</td>
+      ${ODS_LIST.map(o=>{const s=odsAvg(mun,o.id);const lv2=matLv(s);return`<td class="ods-score-cell"><span style="color:${MATC[lv2]}">${s.toFixed(1)}</span></td>`;}).join('')}
+      <td><span class="rank-ism" style="color:${MATC[lv]}">${ism.toFixed(2)}</span></td>
+      <td><span class="rank-mat" style="background:${MATC[lv]}">${MAT[lv]}</span></td>
+    </tr>`;}).join('');
+  // Bar chart
+  buildCompChart(null);
+  // Bottom ODS cards
+  document.getElementById('comp-bottom').innerHTML=ODS_LIST.map(o=>{
+    const sorted=[...MUNS].sort((a,b)=>odsAvg(b,o.id)-odsAvg(a,o.id));
+    return`<div class="comp-ods-card">
+      <div class="comp-ods-title"><div class="comp-ods-dot" style="background:${o.color}"></div><span class="comp-ods-nm">ODS ${o.id} — ${o.short}</span></div>
+      ${sorted.map(mun=>{const s=odsAvg(mun,o.id);const lv=matLv(s);return`<div class="comp-ods-mun"><span class="comp-ods-mun-nm">${mun}</span><span class="comp-ods-val" style="color:${MATC[lv]}">${s.toFixed(1)}</span></div>
+      <div class="comp-ods-bar"><div class="comp-ods-fill" style="width:${(s/5)*100}%;background:${o.color}"></div></div>`;}).join('')}
+    </div>`;}).join('');
+}
+function buildCompChart(highlight){
+  if(compCh)compCh.destroy();
+  const ctx=document.getElementById('compChart').getContext('2d');
+  const colors=['#003893','#009EDB','#38a169','#d69e2e'];
+  compCh=new Chart(ctx,{type:'bar',data:{
+    labels:ODS_LIST.map(o=>`ODS ${o.id}`),
+    datasets:MUNS.map((mun,i)=>({
+      label:mun,data:ODS_LIST.map(o=>odsAvg(mun,o.id)),
+      backgroundColor:highlight&&highlight!==mun?colors[i]+'44':colors[i]+'cc',
+      borderColor:colors[i],borderWidth:highlight===mun?2:1,borderRadius:3,
+    }))
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{min:0,max:5,ticks:{stepSize:1,font:{size:9}},grid:{color:'rgba(0,0,0,.06)'}},
+            x:{ticks:{font:{size:9}},grid:{display:false}}},
+    plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:10,usePointStyle:true}},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw.toFixed(2)}`}}}}});
+}
+function highlightComp(mun){buildCompChart(mun);}
+
+// ══ GAP ANALYSIS ═════════════════════════════════
+const TARGET=4.0;// Agenda 2030 target
+function yrsToTarget(mun,ods){const cur=odsAvg(mun,ods);const gap=TARGET-cur;return gap<=0?0:Math.ceil(gap/TREND);}
+function ismYrs(mun){const cur=ismGlobal(mun);const gap=TARGET-cur;return gap<=0?0:Math.ceil(gap/TREND);}
+function semColor(v){return v<=3?'#38a169':v<=8?'#d69e2e':'#e53e3e';}
+
+function buildGap(){
+  // Header cards
+  document.getElementById('gap-header').innerHTML=MUNS.map(mun=>{
+    const ism=ismGlobal(mun);const gap=(TARGET-ism).toFixed(2);const yrs=ismYrs(mun);
+    const pct=Math.min(100,(ism/TARGET)*100);const lv=matLv(ism);
+    return`<div class="gap-mun-summary">
+      <div class="gap-mun-nm">${mun}</div>
+      <div class="gap-ism-now" style="color:${MATC[lv]}">${ism.toFixed(2)}</div>
+      <div class="gap-to-target">Gap p/ meta 4,0: <strong style="color:${semColor(yrs)}">−${gap}</strong></div>
+      <div class="gap-year" style="color:${semColor(yrs)}">⏱ ~${yrs} anos p/ meta</div>
+      <div style="font-size:.62rem;color:var(--muted)">Projeção: ~${2024+yrs}</div>
+      <div class="gap-progress"><div class="gap-progress-fill" style="width:${pct}%;background:${MATC[lv]}"></div></div>
+    </div>`;}).join('');
+
+  // Matrix table
+  document.getElementById('gap-tbody').innerHTML=MUNS.map(mun=>{
+    const ism=ismGlobal(mun);const gapIsm=(TARGET-ism);const yrsIsm=ismYrs(mun);
+    return`<tr>
+      <td class="gap-row-nm">${mun}</td>
+      ${ODS_LIST.map(o=>{const s=odsAvg(mun,o.id);const g=TARGET-s;const y=yrsToTarget(mun,o.id);return`<td>
+        <div class="gap-cell">
+          <span class="gap-semaforo" style="background:${semColor(y)}"></span>
+          <span class="gap-val" style="color:${MATC[matLv(s)]}">${s.toFixed(1)}</span>
+          <span class="gap-diff">−${g.toFixed(1)} / ~${y}a</span>
+        </div></td>`;}).join('')}
+      <td><strong style="color:${MATC[matLv(ism)]};font-size:.9rem">${ism.toFixed(2)}</strong></td>
+      <td><strong style="color:${semColor(gapIsm)}">${gapIsm.toFixed(2)}</strong></td>
+      <td><span style="font-weight:700;color:${semColor(yrsIsm)}">${2024+yrsIsm} (~${yrsIsm}a)</span></td>
+    </tr>`;}).join('');
+
+  // ODS cards
+  document.getElementById('gap-cards').innerHTML=ODS_LIST.map(o=>{
+    const sorted=[...MUNS].sort((a,b)=>odsAvg(a,o.id)-odsAvg(b,o.id));
+    return`<div class="gap-ods-card">
+      <div class="gap-ods-hd"><span class="gap-ods-label" style="background:${o.color}">ODS ${o.id}</span><span class="gap-ods-name">${o.short}</span></div>
+      ${sorted.map(mun=>{const s=odsAvg(mun,o.id);const y=yrsToTarget(mun,o.id);return`<div class="gap-mun-row">
+        <div class="gap-mun-info"><span class="gap-mun-n">${mun}</span><span class="gap-mun-y"><span class="gap-sem" style="background:${semColor(y)}"></span>~${y} anos · projeção ${2024+y}</span></div>
+        <span class="gap-val-sm" style="color:${MATC[matLv(s)]}">${s.toFixed(1)}</span>
+      </div>`;}).join('')}
+      <div class="target-line">🎯 Meta 2030: 4,0</div>
+    </div>`;}).join('');
+}
+
+// ══ TAB SWITCH ═══════════════════════════════════
+function sw(mod,btn){
+  document.querySelectorAll('.module-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('mod-'+mod).classList.add('active');
+  btn.classList.add('active');
+  if(mod==='ism')setTimeout(()=>leafMap?.invalidateSize(),80);
+  if(mod==='comp')setTimeout(()=>{if(!compCh)buildComp();},50);
+}
+
+window.addEventListener('load',init);
+</script>
+
+<!-- ══════════ REFERENCES SECTION ══════════ -->
+<section id="referencias" style="background:#fff;border-top:3px solid #003893;padding:28px 36px 36px;font-family:'Segoe UI',system-ui,sans-serif;font-size:.74rem;color:#2d3748;">
+  <h2 style="font-size:.92rem;font-weight:800;color:#001f5b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">
+    📚 Fontes e Referências
+  </h2>
+  <p style="font-size:.67rem;color:#718096;margin-bottom:18px;line-height:1.7;max-width:900px">
+    Os scores ISM-ODS foram calculados com base em dados oficiais abertos consultados em 2025–2026.
+    <strong>Nota metodológica:</strong> Barreirinha (IBGE 2101608) não consta nas bases IAS/SINISA consultadas; os indicadores foram estimados com base em dados da Microrregião Norte Maranhense (SINISA/IBGE 2022–2024) e sinalizados com ⚠ na plataforma.
+    Os scores não disponíveis em fontes abertas foram classificados com base em critérios qualitativos (IBGE MUNIC 2023) e representam uma baseline para validação em campo prevista pelo projeto Radar ODS (FAPEMA Edital 03/2026).
+  </p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px;">
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #003893">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">1. IBGE — Censo Demográfico 2022</div>
+      <div style="color:#718096;line-height:1.6">Domicílios com energia elétrica, esgotamento sanitário por rede geral, destino do lixo e moradia adequada. Resultado do Universo, publicado em 2024.</div>
+      <a href="https://censo2022.ibge.gov.br" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">censo2022.ibge.gov.br ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #003893">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">2. SINISA 2024 — Sistema Nacional de Informações em Saneamento Básico</div>
+      <div style="color:#718096;line-height:1.6">Cobertura de água, esgoto e resíduos sólidos por município. Dados consultados via Instituto Água e Saneamento (IAS) para Santo Amaro (2110278), Humberto de Campos (2105005) e Tutóia (2112506).</div>
+      <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">aguaesaneamento.org.br ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #003893">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">3. IBGE MUNIC 2023 — Pesquisa de Informações Básicas Municipais</div>
+      <div style="color:#718096;line-height:1.6">Existência de plano municipal de saneamento, política de saneamento, conselho, alertas hidrológicos, plano diretor de drenagem e mecanismos de controle social.</div>
+      <a href="https://www.ibge.gov.br/estatisticas/sociais/saude/10586-pesquisa-de-informacoes-basicas-municipais.html" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">ibge.gov.br/munic ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #FCC30B">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">4. ANEEL SIGEL 2024 — Sistema de Informações Geográficas do Setor Elétrico</div>
+      <div style="color:#718096;line-height:1.6">Unidades de geração distribuída (solar fotovoltaica) por município. Nenhuma das 4 cidades-piloto possuía instalações registradas em 2024.</div>
+      <a href="https://sigel.aneel.gov.br/portal/home/" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">sigel.aneel.gov.br ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #3F7E44">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">5. CEMADEN 2024 — Centro Nacional de Monitoramento e Alertas de Desastres Naturais</div>
+      <div style="color:#718096;line-height:1.6">Municípios em áreas de risco, sistemas de alerta, ocorrências hidrológicas e vulnerabilidade climática municipal.</div>
+      <a href="https://www.cemaden.gov.br/municipios-em-areas-de-risco/" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">cemaden.gov.br ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #3F7E44">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">6. IBAMA / MapBiomas 2022 — Cobertura e Uso do Solo</div>
+      <div style="color:#718096;line-height:1.6">Cobertura vegetal remanescente, preservação de manguezais e monitoramento de ecossistemas costeiros nos biomas Amazônia e Cerrado (municípios da Margem Equatorial Maranhense).</div>
+      <a href="https://mapbiomas.org" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">mapbiomas.org ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #0A97D9">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">7. MPA 2023 — Ministério da Pesca e Aquicultura</div>
+      <div style="color:#718096;line-height:1.6">Dados sobre gestão pesqueira artesanal, acordos de pesca comunitária e ordenamento pesqueiro em municípios costeiros do Maranhão.</div>
+      <a href="https://www.gov.br/mpa" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">gov.br/mpa ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #0A97D9">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">8. ANA 2023 — Agência Nacional de Águas e Saneamento Básico</div>
+      <div style="color:#718096;line-height:1.6">Qualidade da água em corpos hídricos costeiros e monitoramento hidrológico. Dados SNIRH para a Região Hidrográfica Atlântico NE Ocidental.</div>
+      <a href="https://www.snirh.gov.br/portal/snirh" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">snirh.gov.br ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #19486A">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">9. CGU 2023 — Escala Brasil Transparente</div>
+      <div style="color:#718096;line-height:1.6">Avaliação da transparência ativa e passiva dos municípios brasileiros. Indicador de dados abertos e acesso à informação pública.</div>
+      <a href="https://www.cgu.gov.br/assuntos/transparencia-publica/escala-brasil-transparente" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">cgu.gov.br/escala-brasil-transparente ↗</a>
+    </div>
+
+    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #19486A">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">10. TCU / SEFAZ-MA 2024 — Financiamentos Climáticos</div>
+      <div style="color:#718096;line-height:1.6">Acesso municipal a linhas de crédito e editais de financiamento climático (BNDES Clima, BID, Fundo Amazônia). Dados de contratos e convênios federais.</div>
+      <a href="https://www.portaltransparencia.gov.br" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">portaltransparencia.gov.br ↗</a>
+    </div>
+
+    <div style="background:#eef2fb;border-radius:8px;padding:12px 14px;border-left:3px solid #001f5b;grid-column:1/-1">
+      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">11. Referência Metodológica — Modelo de Atributos ODS</div>
+      <div style="color:#718096;line-height:1.6">Cunha, D.R., et al. (2025). <em>A multi-attribute sustainability model for port municipalities under the Sustainable Development Goals.</em> <strong>Marine Policy</strong>. Universidade Federal do Maranhão (UFMA) / Erasmus University Rotterdam.
+        A metodologia ISM-ODS (escala 1–5, 5 níveis de maturidade) é aplicada aqui aos 4 municípios-piloto do Projeto Radar ODS, financiado pela FAPEMA (Edital 03/2026 — Deep Tech Catalyst).</div>
+      <a href="https://sdgporthub.com" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">sdgporthub.com ↗</a>
+      &nbsp;|&nbsp;
+      <a href="https://sdgports.manus.space" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">sdgports.manus.space ↗</a>
+    </div>
+
+  </div>
+
+  <p style="font-size:.63rem;color:#a0aec0;margin-top:18px;text-align:center;line-height:1.6">
+    Plataforma desenvolvida no âmbito do Projeto Radar ODS — FAPEMA Edital 03/2026 · Profa. Dra. Darliane Ribeiro Cunha (PI) · UFMA · Versão 2.0 (dados reais) · Junho/2026
+  </p>
+</section>
+
+</body>
+</html>
