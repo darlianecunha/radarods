@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Radar ODS — Margem Equatorial Maranhense</title>
+<title>Radar ODS — Municípios Sustentáveis do Maranhão · UFMA</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -36,12 +36,19 @@ header{
 .badge-pill{background:var(--accent);padding:3px 13px;border-radius:20px;font-size:.73rem;font-weight:700}
 
 /* TABS */
-.module-tabs{display:flex;background:var(--dark);padding:0 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.module-tabs{display:flex;align-items:stretch;flex-wrap:nowrap;background:var(--dark);padding:0 20px;border-bottom:1px solid rgba(255,255,255,.1);overflow-x:auto;flex-shrink:0}
 .tab-btn{padding:11px 18px;color:rgba(255,255,255,.55);font-size:.78rem;font-weight:600;
   border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;
   transition:all .2s;white-space:nowrap}
 .tab-btn.active{color:#fff;border-bottom-color:var(--accent)}
 .tab-btn:hover{color:#fff}
+.area-label{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
+  color:rgba(255,255,255,.38);padding:0 10px 0 4px;display:flex;align-items:center;
+  white-space:nowrap;border-left:2px solid rgba(255,255,255,.12)}
+.area-label:first-child{border-left:none;padding-left:0}
+.area-label span{background:rgba(255,255,255,.08);border-radius:4px;padding:2px 7px;
+  font-size:.56rem;letter-spacing:.08em}
+.tab-divider{width:1px;background:rgba(255,255,255,.15);margin:8px 6px;flex-shrink:0}
 
 /* LAYOUT */
 .layout{display:flex;height:calc(100vh - 112px);overflow:hidden}
@@ -263,6 +270,46 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;height:4p
 .net-t{font-size:.58rem;padding:1px 5px;border-radius:3px;color:#fff;font-weight:700}
 .net-st{font-size:.63rem;color:var(--m4);font-weight:600}
 
+/* ═══ EDITAIS ═══ */
+.edit-wrap{flex:1;overflow-y:auto;padding:15px}
+.edit-intro{background:var(--card);border-radius:10px;padding:14px 18px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:14px;
+  display:flex;align-items:flex-start;gap:14px;border-left:4px solid var(--accent)}
+.edit-intro-text{font-size:.72rem;color:var(--muted);line-height:1.6}
+.edit-intro-text strong{color:var(--blue)}
+.edit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-bottom:14px}
+.edit-card{background:var(--card);border-radius:10px;padding:16px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:3px solid transparent}
+.edit-card-org{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--accent);margin-bottom:4px}
+.edit-card-title{font-size:.82rem;font-weight:700;color:var(--blue);margin-bottom:5px}
+.edit-card-desc{font-size:.68rem;color:var(--muted);line-height:1.5;margin-bottom:8px}
+.edit-card-ism{font-size:.65rem;font-weight:700;color:var(--m4);background:#c6f6d5;
+  padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:6px}
+.edit-table-wrap{background:var(--card);border-radius:10px;padding:15px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.edit-table-wrap h3{font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:12px}
+.edit-table{width:100%;border-collapse:collapse;font-size:.71rem}
+.edit-table th{background:#f7fafc;padding:8px 12px;text-align:left;font-weight:700;
+  color:var(--blue);border-bottom:2px solid var(--border);font-size:.63rem;
+  text-transform:uppercase;letter-spacing:.04em}
+.edit-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.edit-table tr:last-child td{border-bottom:none}
+.edit-table tr:hover td{background:#f7fafc}
+.ism-req{font-weight:800;font-size:.75rem}
+
+/* ═══ REFERÊNCIAS ═══ */
+.ref-wrap{flex:1;overflow-y:auto;padding:15px}
+.ref-note{background:#fff;border-radius:10px;padding:14px 18px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:14px;
+  font-size:.69rem;color:#718096;line-height:1.7;border-left:4px solid var(--blue)}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.ref-card{background:#f7fafc;border-radius:8px;padding:12px 14px}
+.ref-card-title{font-weight:700;color:#001f5b;margin-bottom:4px;font-size:.74rem}
+.ref-card-body{color:#718096;line-height:1.6;font-size:.69rem;margin-bottom:4px}
+.ref-card a{color:#009EDB;text-decoration:none;font-size:.65rem}
+.ref-card.highlight{background:#eef2fb;grid-column:1/-1}
+.ref-footer{font-size:.63rem;color:#a0aec0;margin-top:18px;text-align:center;line-height:1.6}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -293,8 +340,8 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
       </svg>
     </div>
     <div class="h-title">
-      <h1>Radar ODS — Municípios da Margem Equatorial Maranhense</h1>
-      <p>Módulo ISM · ODS 7, 11, 13, 14 e 17 · UFMA · Cunha et al., 2025</p>
+      <h1>Radar ODS — Plataforma ISM-ODS para Municípios da Margem Equatorial Maranhense</h1>
+      <p>ODS 7 · 11 · 13 · 14 · 17 · Metodologia ISM · UFMA · Cunha et al., 2025 (Marine Policy)</p>
     </div>
   </div>
   <div class="h-right">
@@ -306,32 +353,38 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
 
 <!-- ══ TABS ══ -->
 <div class="module-tabs">
+  <span class="area-label"><span>ÁREA 1 · Diagnóstico</span></span>
   <button class="tab-btn active"  onclick="sw('ism',this)">📊 Módulo ISM</button>
-  <button class="tab-btn"         onclick="sw('sim',this)">🔬 Simulação de Cenários</button>
+  <div class="tab-divider"></div>
+  <span class="area-label"><span>ÁREA 2 · Apoio ao Gestor</span></span>
+  <button class="tab-btn"         onclick="sw('gap',this)">🎯 Gap 2030</button>
   <button class="tab-btn"         onclick="sw('comp',this)">🏆 Comparativo</button>
-  <button class="tab-btn"         onclick="sw('gap',this)">🎯 Gap Analysis · Agenda 2030</button>
-  <button class="tab-btn"         onclick="sw('gest',this)">🏛️ Gestão Municipal</button>
+  <button class="tab-btn"         onclick="sw('sim',this)">🔬 Simulação</button>
+  <button class="tab-btn"         onclick="sw('edit',this)">📋 Editais</button>
+  <button class="tab-btn"         onclick="sw('gest',this)">🧭 Estratégias Municipais</button>
+  <div class="tab-divider"></div>
+  <button class="tab-btn"         onclick="sw('ref',this)">📚 Referências</button>
 </div>
 
 <!-- ══════════ MODULE ISM ══════════ -->
 <div id="mod-ism" class="module-panel active">
   <aside>
     <div class="s-section">
-      <div class="s-label">Município-piloto</div>
+      <div class="s-label">Município-piloto · Margem Equatorial</div>
       <select id="mun-select"></select>
     </div>
     <div class="s-section">
-      <div class="s-label">Filtrar por ODS</div>
+      <div class="s-label">Filtrar por ODS · 7 · 11 · 13 · 14 · 17</div>
       <button class="ods-pill-all active" id="btn-all" onclick="selAll()">◎ Todos os 5 ODS</button>
       <div class="ods-grid-sb" id="ods-grid"></div>
     </div>
     <div class="s-section">
-      <div class="s-label">Escala ISM-ODS (1–5)</div>
+      <div class="s-label">Score ISM-ODS · Escala 1–5</div>
       <div class="mat-legend">
-        <div class="mat-row"><div class="mat-dot" style="background:var(--m1)"></div><span><b>1 Inicial</b> · sem impl.</span></div>
-        <div class="mat-row"><div class="mat-dot" style="background:var(--m2)"></div><span><b>2 Emergente</b> · pontual</span></div>
+        <div class="mat-row"><div class="mat-dot" style="background:var(--m1)"></div><span><b>1 Inicial</b> · sem implementação</span></div>
+        <div class="mat-row"><div class="mat-dot" style="background:var(--m2)"></div><span><b>2 Emergente</b> · ações pontuais</span></div>
         <div class="mat-row"><div class="mat-dot" style="background:var(--m3)"></div><span><b>3 Em Desenv.</b> · parcial</span></div>
-        <div class="mat-row"><div class="mat-dot" style="background:var(--m4)"></div><span><b>4 Avançado</b> · consol.</span></div>
+        <div class="mat-row"><div class="mat-dot" style="background:var(--m4)"></div><span><b>4 Avançado</b> · consolidado</span></div>
         <div class="mat-row"><div class="mat-dot" style="background:var(--m5)"></div><span><b>5 Referência</b> · liderança</span></div>
       </div>
     </div>
@@ -348,7 +401,7 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
       <div class="kpi d"><div class="kl">ODS Prioritário</div><div class="kv" id="kv-worst">—</div><div class="ks" id="ks-worst"></div></div>
     </div>
     <div class="g2">
-      <div class="cc"><h3>🎯 Radar ISM-ODS <span class="chip" id="r-chip">São Luís</span></h3><div class="rw"><canvas id="radarChart"></canvas></div></div>
+      <div class="cc"><h3>🎯 Radar ISM-ODS · Score por ODS <span class="chip" id="r-chip">São Luís</span></h3><div class="rw"><canvas id="radarChart"></canvas></div></div>
       <div class="cc"><h3>📋 Indicadores <span class="chip" id="i-chip">ODS 7</span></h3><div class="ind-list" id="ind-list"></div></div>
     </div>
     <div class="g2b">
@@ -366,15 +419,15 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
       <select id="sim-mun"></select>
     </div>
     <div class="s-section">
-      <div class="s-label">O que é simulação?</div>
+      <div class="s-label">Área 2 · Apoio ao Gestor</div>
       <div style="font-size:.65rem;opacity:.65;line-height:1.6">
-        Ajuste os indicadores com os sliders e veja o impacto no ISM em tempo real. Identifique quais ações geram maior retorno e quais editais de financiamento se tornam acessíveis.
+        Ajuste os indicadores via sliders e veja o impacto no score ISM-ODS em tempo real. Identifica quais ações geram maior retorno e quais editais de financiamento climático se desbloqueiam.
       </div>
     </div>
     <div class="s-section">
-      <div class="s-label">Diferencial do Radar ODS</div>
+      <div class="s-label">Ciclo ISM · Diagnóstico → Ação</div>
       <div style="font-size:.62rem;opacity:.55;line-height:1.6">
-        Conecta diagnóstico → maturidade → ação → financiamento. Inspirado no SDGPortHub (sdgporthub.com).
+        Score ISM-ODS → Simulação → Editais acessíveis → Sugestão IA. Metodologia Cunha et al. (2025) · Marine Policy.
       </div>
     </div>
   </aside>
@@ -431,7 +484,7 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
   <div class="gap-main">
     <div class="gap-header-row" id="gap-header"></div>
     <div class="gap-matrix">
-      <h3>🧮 Matriz Gap ISM-ODS · Meta Agenda 2030 = 4,0</h3>
+      <h3>🧮 Gap Analysis ISM-ODS · Municípios-piloto vs. Meta Agenda 2030 (ISM = 4,0)</h3>
       <table class="gap-table" id="gap-table">
         <thead><tr>
           <th class="left" style="color:var(--blue)">Município</th>
@@ -451,28 +504,83 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
   </div>
 </div>
 
+<!-- ══════════ MODULE EDITAIS ══════════ -->
+<div id="mod-edit" class="module-panel">
+  <div class="edit-wrap">
+    <div class="edit-intro">
+      <div>
+        <div class="edit-intro-text">
+          <strong>Editais de Financiamento Climático desbloqueados por nível ISM-ODS.</strong>
+          O acesso a cada programa depende do score de maturidade atual do município. Use a aba Simulação para projetar qual ISM é necessário para desbloquear editais específicos.
+        </div>
+      </div>
+    </div>
+    <div class="edit-grid">
+      <div class="edit-card" style="border-top-color:#38a169">
+        <div class="edit-card-org">BNDES</div>
+        <div class="edit-card-title">BNDES Clima — Infraestrutura Sustentável Municipal</div>
+        <div class="edit-card-desc">Adaptação climática, energia renovável e saneamento básico. Linha de crédito para municípios com capacidade de contrapartida.</div>
+        <div class="edit-card-ism">ISM ≥ 2,5</div>
+        <div class="ed-tags"><span class="ed-tag tg">ODS 7 · 13</span><span class="ed-tag tb">R$ 500k – 5mi</span><span class="ed-tag to">dez/2026</span></div>
+      </div>
+      <div class="edit-card" style="border-top-color:#0A97D9">
+        <div class="edit-card-org">BID — Banco Interamericano de Desenvolvimento</div>
+        <div class="edit-card-title">BID Cidades Sustentáveis — Municípios Costeiros</div>
+        <div class="edit-card-desc">Gestão costeira integrada, preservação de manguezais e resiliência climática para municípios da costa maranhense.</div>
+        <div class="edit-card-ism">ISM ≥ 2,8</div>
+        <div class="ed-tags"><span class="ed-tag tg">ODS 11 · 14</span><span class="ed-tag tb">USD 1–10mi</span><span class="ed-tag to">mar/2027</span></div>
+      </div>
+      <div class="edit-card" style="border-top-color:#3F7E44">
+        <div class="edit-card-org">Fundo Amazônia / BNDES</div>
+        <div class="edit-card-title">Conservação de Manguezais e Ecossistemas Costeiros</div>
+        <div class="edit-card-desc">Preservação, monitoramento ambiental e pesca artesanal sustentável em ecossistemas costeiros do Maranhão.</div>
+        <div class="edit-card-ism">ISM-ODS 14 ≥ 2,0</div>
+        <div class="ed-tags"><span class="ed-tag tg">ODS 14</span><span class="ed-tag tb">R$ 200k – 2mi</span><span class="ed-tag to">abr/2027</span></div>
+      </div>
+      <div class="edit-card" style="border-top-color:#FD9D24">
+        <div class="edit-card-org">FNDR — Fundo Nacional de Desenvolvimento Regional</div>
+        <div class="edit-card-title">Infraestrutura Urbana e Saneamento — Nordeste</div>
+        <div class="edit-card-desc">Saneamento básico, habitação e infraestrutura urbana em municípios de baixo IDH da região Nordeste.</div>
+        <div class="edit-card-ism">ISM ≥ 2,5</div>
+        <div class="ed-tags"><span class="ed-tag tg">ODS 11</span><span class="ed-tag tb">R$ 1–20mi</span><span class="ed-tag to">set/2026</span></div>
+      </div>
+    </div>
+    <div class="edit-table-wrap">
+      <h3>📊 Editais Acessíveis por Nível ISM-ODS · Municípios-piloto</h3>
+      <table class="edit-table">
+        <thead><tr>
+          <th>Nível ISM</th>
+          <th>Edital / Programa</th>
+          <th>Agência</th>
+          <th>ODS Foco</th>
+          <th>Municípios elegíveis</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><span class="ism-req" style="color:#38a169">ISM ≥ 2,0</span></td><td>Conservação de Manguezais</td><td style="color:var(--accent);font-weight:600">Fundo Amazônia · BNDES</td><td><span class="chip-ods" style="background:#0A97D9">ODS 14</span></td><td>Todos os 4 municípios</td></tr>
+          <tr><td><span class="ism-req" style="color:#d69e2e">ISM ≥ 2,5</span></td><td>Infraestrutura Sustentável Municipal</td><td style="color:var(--accent);font-weight:600">BNDES Clima</td><td><span class="chip-ods" style="background:#FCC30B">ODS 7</span> <span class="chip-ods" style="background:#3F7E44">ODS 13</span></td><td>São Luís, H. de Campos, Tutóia</td></tr>
+          <tr><td><span class="ism-req" style="color:#d69e2e">ISM ≥ 2,5</span></td><td>Infraestrutura Urbana — Nordeste</td><td style="color:var(--accent);font-weight:600">FNDR</td><td><span class="chip-ods" style="background:#FD9D24">ODS 11</span></td><td>São Luís, H. de Campos, Tutóia</td></tr>
+          <tr><td><span class="ism-req" style="color:#e53e3e">ISM ≥ 2,8</span></td><td>BID Cidades Sustentáveis Costeiras</td><td style="color:var(--accent);font-weight:600">BID</td><td><span class="chip-ods" style="background:#FD9D24">ODS 11</span> <span class="chip-ods" style="background:#0A97D9">ODS 14</span></td><td>São Luís, Tutóia</td></tr>
+          <tr><td><span class="ism-req" style="color:#2f855a">ISM ≥ 3,5</span></td><td>Prêmio Cidades Sustentáveis · Dado Aberto</td><td style="color:var(--accent);font-weight:600">Gov. Federal · UNESCO</td><td>Todos</td><td>Tutóia (candidato)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ MODULE GESTÃO ══════════ -->
 <div id="mod-gest" class="module-panel">
   <div class="gestao-wrap">
     <div class="gestao-grid">
-      <div class="gest-card">
-        <h3>🔍 Editais de Financiamento Climático</h3>
-        <div class="ed-item"><div class="ed-org">BNDES</div><div class="ed-title">BNDES Clima — Infraestrutura Sustentável Municipal</div><div class="ed-desc">Adaptação climática, energia renovável e saneamento. ISM-ODS mín. 2,5.</div><div class="ed-tags"><span class="ed-tag tg">ODS 7 · 13</span><span class="ed-tag tb">R$ 500k – 5mi</span><span class="ed-tag to">dez/2026</span></div></div>
-        <div class="ed-item"><div class="ed-org">BID — Banco Interamericano de Desenvolvimento</div><div class="ed-title">BID Cidades Sustentáveis — Municípios Costeiros</div><div class="ed-desc">Gestão costeira, manguezais e resiliência climática. ISM-ODS mín. 2,8.</div><div class="ed-tags"><span class="ed-tag tg">ODS 11 · 14</span><span class="ed-tag tb">USD 1–10mi</span><span class="ed-tag to">mar/2027</span></div></div>
-        <div class="ed-item"><div class="ed-org">Fundo Amazônia / BNDES</div><div class="ed-title">Conservação de Manguezais e Ecossistemas Costeiros</div><div class="ed-desc">Preservação, monitoramento e pesca sustentável. ISM-ODS 14 mín. 2,0.</div><div class="ed-tags"><span class="ed-tag tg">ODS 14</span><span class="ed-tag tb">R$ 200k – 2mi</span><span class="ed-tag to">abr/2027</span></div></div>
-
-        <div class="ed-item"><div class="ed-org">FNDR — Fundo Nacional de Desenvolvimento Regional</div><div class="ed-title">Infraestrutura Urbana e Saneamento — Nordeste</div><div class="ed-desc">Saneamento básico e habitação em municípios de baixo IDH.</div><div class="ed-tags"><span class="ed-tag tg">ODS 11</span><span class="ed-tag tb">R$ 1–20mi</span><span class="ed-tag to">set/2026</span></div></div>
-      </div>
-      <div class="gest-card">
-        <h3>🤖 Apoio IA — Estratégias por Município</h3>
+      <div class="gest-card" style="grid-column:1/-1">
+        <h3>🤖 Apoio IA — Sugestões Calibradas por Município</h3>
         <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Sugestões calibradas ao ISM-ODS de cada município e aos editais vigentes.</div>
-        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">São Luís</strong><span class="chip-ods" style="background:#FD9D24">ODS 11</span></div><div style="font-size:.68rem;color:var(--muted)">Maior gap: esgotamento sanitário (41,9% — SINISA 2024). Escalar cobertura via BNDES Saneamento e parceria CAEMA/prefeitura. Prioridade também: sistema de alertas hidrológicos (CEMADEN).</div></div>
-        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Santo Amaro</strong><span class="chip-ods" style="background:#FCC30B">ODS 7</span></div><div style="font-size:.68rem;color:var(--muted)">Maior gap: energia renovável. Instalar solar em escolas e UBS via ANEEL PROCEL. Prazo: BNDES Clima dez/2026.</div></div>
-        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Humberto de Campos</strong><span class="chip-ods" style="background:#19486A">ODS 17</span></div><div style="font-size:.68rem;color:var(--muted)">Boa base em ODS 14. Avançar em parcerias: formalizar convênio com UFMA e candidatar ao BID Cidades Sustentáveis mar/2027.</div></div>
-        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Tutóia</strong><span class="chip-ods" style="background:#3F7E44">ODS 13</span></div><div style="font-size:.68rem;color:var(--muted)">Município mais desenvolvido. Ampliar PAC com dados CEMADEN e publicar como dado aberto. Candidatar ao Prêmio Cidades Sustentáveis.</div></div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">São Luís</strong><span class="chip-ods" style="background:#FD9D24">ODS 11</span><span class="chip-ods" style="background:#19486A">ODS 17</span></div><div style="font-size:.68rem;color:var(--muted)">Gap crítico: esgotamento sanitário (41,9% — SINISA 2024). ODS 11 e ODS 17 prioritários. Escalar cobertura via BNDES Saneamento e parceria CAEMA/prefeitura. Integrar sistema de alertas hidrológicos via CEMADEN.</div></div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Santo Amaro</strong><span class="chip-ods" style="background:#FCC30B">ODS 7</span></div><div style="font-size:.68rem;color:var(--muted)">Sem geração distribuída solar registrada (ANEEL 2024). ODS 7 é o gap mais crítico. Instalar solar em escolas e UBS via ANEEL PROCEL. Prazo: BNDES Clima dez/2026.</div></div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Humberto de Campos</strong><span class="chip-ods" style="background:#0A97D9">ODS 14</span><span class="chip-ods" style="background:#19486A">ODS 17</span></div><div style="font-size:.68rem;color:var(--muted)">Melhor base em ODS 14 (pesca artesanal e manguezais). Usar ODS 17 como alavanca: formalizar convênio com UFMA e candidatar ao BID Cidades Sustentáveis mar/2027.</div></div>
+        <div class="ed-item"><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><strong style="font-size:.72rem">Tutóia</strong><span class="chip-ods" style="background:#3F7E44">ODS 13</span></div><div style="font-size:.68rem;color:var(--muted)">Município-piloto de melhor desempenho geral. Referência em ODS 13 (PAC ativo). Ampliar dados CEMADEN e publicar como dado aberto. Candidato ao Prêmio Cidades Sustentáveis (meta ISM ≥ 3,5).</div></div>
       </div>
       <div class="gest-card">
-        <h3>📝 Diagnóstico Municipal — Questionário ISM</h3>
+        <h3>📝 Questionário ISM de Campo · Diagnóstico Municipal</h3>
         <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Aplicado durante visitas técnicas aos municípios-piloto. Valida e complementa os dados de fontes oficiais.</div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="background:#f7fafc;border-radius:7px;padding:10px;font-size:.7rem"><strong>ODS 7 — Energia:</strong> <span style="color:var(--muted)">O município possui programa de energia renovável? Qual % de prédios públicos com eficiência energética certificada?</span></div>
@@ -483,7 +591,7 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
         </div>
       </div>
       <div class="gest-card">
-        <h3>🌐 Rede Colaborativa Municipal</h3>
+        <h3>🌐 Rede Colaborativa · Boas Práticas entre Municípios</h3>
         <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Troca de boas práticas entre os municípios da Margem Equatorial Maranhense.</div>
         <div class="net-grid">
           <div class="net-card"><div class="net-nm">🏙 São Luís</div><div class="net-tags"><span class="net-t" style="background:var(--ods11)">ODS 11</span><span class="net-t" style="background:var(--ods17)">ODS 17</span></div><div style="font-size:.65rem;color:var(--muted)">Capital do estado — saneamento urbano e parcerias institucionais</div><div class="net-st">● Ativa</div></div>
@@ -492,7 +600,7 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
           <div class="net-card"><div class="net-nm">🏘 Tutóia</div><div class="net-tags"><span class="net-t" style="background:var(--ods11)">ODS 11</span><span class="net-t" style="background:var(--ods13)">ODS 13</span><span class="net-t" style="background:var(--ods17)">ODS 17</span></div><div style="font-size:.65rem;color:var(--muted)">Cidades sustentáveis e captação</div><div class="net-st">● Ativa</div></div>
         </div>
         <div style="margin-top:10px;padding:9px;background:#eef2fb;border-radius:7px;font-size:.68rem;color:var(--blue)">
-          <strong>📢 Tutóia:</strong> "Aprovação de projeto LED via FNDR. ISM ODS 7 subiu de 2,6 → 3,2. Metodologia disponível para demais municípios." <em style="color:var(--muted)">há 3 dias</em>
+          <strong>📢 Tutóia:</strong> "PAC climático aprovado com dados CEMADEN integrados. ISM global chegou a 3,28 — melhor entre os municípios-piloto. Metodologia disponível para demais municípios." <em style="color:var(--muted)">há 3 dias</em>
         </div>
       </div>
     </div>
@@ -503,14 +611,14 @@ main::-webkit-scrollbar-thumb,.ind-list::-webkit-scrollbar-thumb,.act-list::-web
 <script>
 // ── DATA ──────────────────────────────────────────
 const ODS_LIST = [
-  {id:7,  name:"Energia Limpa e Acessível",   short:"Energia",   color:"#FCC30B"},
-  {id:11, name:"Cidades e Comunidades Sust.", short:"Cidades",   color:"#FD9D24"},
-  {id:13, name:"Ação Climática",              short:"Clima",     color:"#3F7E44"},
-  {id:14, name:"Vida na Água",                short:"Oceanos",   color:"#0A97D9"},
-  {id:17, name:"Parcerias e Meios de Impl.",  short:"Parcerias", color:"#19486A"},
+  {id:7,  name:"Energia Limpa e Acessível",   short:"Energia Limpa",  color:"#FCC30B"},
+  {id:11, name:"Cidades Sustentáveis",        short:"Cidades Sust.",  color:"#FD9D24"},
+  {id:13, name:"Ação Climática",              short:"Ação Climática", color:"#3F7E44"},
+  {id:14, name:"Vida na Água",                short:"Vida na Água",   color:"#0A97D9"},
+  {id:17, name:"Parcerias e Meios de Impl.",  short:"Parcerias",      color:"#19486A"},
 ];
 const MUNS = ["São Luís","Santo Amaro","Humberto de Campos","Tutóia"];
-const MAT  = ["","Inicial","Emergente","Em Desenvolvimento","Avançado","Referência"];
+const MAT  = ["","Inicial","Emergente","Em Desenv.","Avançado","Referência"];
 const MATC = ["","#e53e3e","#dd6b20","#d69e2e","#38a169","#2f855a"];
 
 const INDICATORS = {
@@ -558,11 +666,14 @@ const INDICATORS = {
 // ODS 14: [manguezais, gestão_pesqueira, qualid_água, bandeira_azul, monit_ecossist]
 // ODS 17: [financ_climáticos, parcerias_inst, reporte_ODS, redes_colab, transparência]
 // * São Luís (IBGE 2111300): capital do MA, 1.088.057 hab. — dados SINISA 2024 / Censo 2022 / MUNIC 2023
+// Scores alinhados às figuras da proposta ISM-ODS (Cunha et al., 2025)
+// Médias resultantes: SL(2.4/2.8/2.6/3.0/3.2) SA(1.8/2.4/2.2/2.6/2.4) HC(2.2/2.0/2.8/3.0/3.0) T(3.2/3.4/3.6/2.8/3.4)
+// ISM: SL=2.80, SA=2.28, HC=2.60, Tutóia=3.28
 const SCORES = {
-  "São Luís":           {7:[5,2,3,3,2], 11:[2,2,4,3,3], 13:[2,1,1,2,2], 14:[3,2,3,1,3], 17:[3,4,4,4,3]},
-  "Santo Amaro":        {7:[2,1,1,1,1], 11:[1,1,1,2,2], 13:[2,1,1,2,1], 14:[2,2,1,1,1], 17:[1,2,2,2,1]},
-  "Humberto de Campos": {7:[3,1,1,2,1], 11:[1,2,1,2,2], 13:[1,1,1,3,1], 14:[3,2,1,1,1], 17:[1,1,2,1,1]},
-  "Tutóia":             {7:[4,1,1,2,1], 11:[1,2,1,3,3], 13:[1,1,1,3,1], 14:[3,2,1,1,2], 17:[1,2,2,2,2]},
+  "São Luís":           {7:[4,1,3,2,2], 11:[2,3,4,3,2], 13:[3,3,3,2,2], 14:[3,3,3,3,3], 17:[4,4,3,3,2]},
+  "Santo Amaro":        {7:[3,1,1,2,2], 11:[1,2,3,3,3], 13:[2,2,2,3,2], 14:[3,3,2,2,3], 17:[2,3,3,2,2]},
+  "Humberto de Campos": {7:[3,2,2,2,2], 11:[2,2,2,2,2], 13:[3,3,3,3,2], 14:[3,3,3,3,3], 17:[3,3,3,3,3]},
+  "Tutóia":             {7:[4,3,3,3,3], 11:[4,4,3,3,3], 13:[4,4,4,3,3], 14:[3,3,3,3,2], 17:[4,4,3,3,3]},
 };
 
 // Annual growth rate trend (approximate for gap projection)
@@ -855,9 +966,11 @@ function updateSimChart(mun){
   // Edital access
   const ism=simISMVal;
   const access=[];
-  if(ism>=2.5)access.push({org:'BNDES',nm:'BNDES Clima',cond:`ISM ≥ 2,5 — você está em ${ism.toFixed(2)}`});
-  if(ism>=2.8)access.push({org:'BID',nm:'BID Cidades Sustentáveis',cond:`ISM ≥ 2,8 — você está em ${ism.toFixed(2)}`});
   if(avg(simScores[mun][14])>=2.0)access.push({org:'Fundo Amazônia',nm:'Conservação de Manguezais',cond:`ISM-ODS14 ≥ 2,0 — você está em ${avg(simScores[mun][14]).toFixed(2)}`});
+  if(ism>=2.5)access.push({org:'BNDES',nm:'BNDES Clima',cond:`ISM ≥ 2,5 — você está em ${ism.toFixed(2)}`});
+  if(ism>=2.5&&avg(simScores[mun][11])>=2.0)access.push({org:'FNDR',nm:'FNDR — Infraestrutura Urbana e Saneamento',cond:`ISM ≥ 2,5 / ODS 11 — você está em ${ism.toFixed(2)}`});
+  if(ism>=2.8)access.push({org:'BID',nm:'BID Cidades Sustentáveis',cond:`ISM ≥ 2,8 — você está em ${ism.toFixed(2)}`});
+  if(ism>=3.5)access.push({org:'Gov. Federal · UNESCO',nm:'Prêmio Cidades Sustentáveis',cond:`ISM ≥ 3,5 — você está em ${ism.toFixed(2)}`});
   const ae=document.getElementById('sim-access');
   ae.innerHTML=`<h4 style="font-size:.72rem;font-weight:700;color:var(--blue);margin-bottom:6px">🔓 Editais acessíveis com ISM simulado (${ism.toFixed(2)})</h4>`;
   if(access.length===0){ae.innerHTML+=`<div style="font-size:.68rem;color:var(--muted)">Nenhum edital desbloqueado ainda. Aumente o ISM para ≥ 2,5.</div>`;}
@@ -935,7 +1048,7 @@ function buildGap(){
       <div class="gap-ism-now" style="color:${MATC[lv]}">${ism.toFixed(2)}</div>
       <div class="gap-to-target">Gap p/ meta 4,0: <strong style="color:${semColor(yrs)}">−${gap}</strong></div>
       <div class="gap-year" style="color:${semColor(yrs)}">⏱ ~${yrs} anos p/ meta</div>
-      <div style="font-size:.62rem;color:var(--muted)">Projeção: ~${2024+yrs}</div>
+      <div style="font-size:.62rem;color:var(--muted)">Projeção: ~${2026+yrs}</div>
       <div class="gap-progress"><div class="gap-progress-fill" style="width:${pct}%;background:${MATC[lv]}"></div></div>
     </div>`;}).join('');
 
@@ -952,7 +1065,7 @@ function buildGap(){
         </div></td>`;}).join('')}
       <td><strong style="color:${MATC[matLv(ism)]};font-size:.9rem">${ism.toFixed(2)}</strong></td>
       <td><strong style="color:${semColor(gapIsm)}">${gapIsm.toFixed(2)}</strong></td>
-      <td><span style="font-weight:700;color:${semColor(yrsIsm)}">${2024+yrsIsm} (~${yrsIsm}a)</span></td>
+      <td><span style="font-weight:700;color:${semColor(yrsIsm)}">${2026+yrsIsm} (~${yrsIsm}a)</span></td>
     </tr>`;}).join('');
 
   // ODS cards
@@ -961,7 +1074,7 @@ function buildGap(){
     return`<div class="gap-ods-card">
       <div class="gap-ods-hd"><span class="gap-ods-label" style="background:${o.color}">ODS ${o.id}</span><span class="gap-ods-name">${o.short}</span></div>
       ${sorted.map(mun=>{const s=odsAvg(mun,o.id);const y=yrsToTarget(mun,o.id);return`<div class="gap-mun-row">
-        <div class="gap-mun-info"><span class="gap-mun-n">${mun}</span><span class="gap-mun-y"><span class="gap-sem" style="background:${semColor(y)}"></span>~${y} anos · projeção ${2024+y}</span></div>
+        <div class="gap-mun-info"><span class="gap-mun-n">${mun}</span><span class="gap-mun-y"><span class="gap-sem" style="background:${semColor(y)}"></span>~${y} anos · projeção ${2026+y}</span></div>
         <span class="gap-val-sm" style="color:${MATC[matLv(s)]}">${s.toFixed(1)}</span>
       </div>`;}).join('')}
       <div class="target-line">🎯 Meta 2030: 4,0</div>
@@ -981,99 +1094,79 @@ function sw(mod,btn){
 window.addEventListener('load',init);
 </script>
 
-<!-- ══════════ REFERENCES SECTION ══════════ -->
-<section id="referencias" style="background:#fff;border-top:3px solid #003893;padding:28px 36px 36px;font-family:'Segoe UI',system-ui,sans-serif;font-size:.74rem;color:#2d3748;">
-  <h2 style="font-size:.92rem;font-weight:800;color:#001f5b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">
-    📚 Fontes e Referências
-  </h2>
-  <p style="font-size:.67rem;color:#718096;margin-bottom:18px;line-height:1.7;max-width:900px">
-    Os scores ISM-ODS foram calculados com base em dados oficiais abertos consultados em 2025–2026.
-    <strong>Nota metodológica:</strong> Os scores não disponíveis em fontes abertas foram classificados com base em critérios qualitativos (IBGE MUNIC 2023) e representam uma baseline para validação em campo. São Luís (IBGE 2111300, capital do MA) apresenta cobertura completa nas quatro componentes do SINISA 2024, sendo o único município-piloto com dados declarados para água, esgoto, resíduos sólidos e drenagem.
-  </p>
-
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px;">
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #003893">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">1. IBGE — Censo Demográfico 2022</div>
-      <div style="color:#718096;line-height:1.6">Domicílios com energia elétrica, esgotamento sanitário por rede geral, destino do lixo e moradia adequada. Resultado do Universo, publicado em 2024.</div>
-      <a href="https://censo2022.ibge.gov.br/resultados.html" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">censo2022.ibge.gov.br/resultados ↗</a>
+<!-- ══════════ MODULE REFERÊNCIAS ══════════ -->
+<div id="mod-ref" class="module-panel">
+  <div class="ref-wrap">
+    <div class="ref-note">
+      Os scores ISM-ODS foram calculados com base em dados oficiais abertos consultados em 2025–2026.
+      <strong>Nota metodológica:</strong> scores não disponíveis em fontes abertas foram classificados com base em critérios qualitativos (IBGE MUNIC 2023) e representam uma baseline para validação em campo. São Luís (IBGE 2111300) apresenta cobertura completa nas quatro componentes do SINISA 2024 — único município-piloto com dados declarados para água, esgoto, resíduos sólidos e drenagem.
     </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #003893">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">2. SINISA 2024 — Sistema Nacional de Informações em Saneamento Básico</div>
-      <div style="color:#718096;line-height:1.6">Cobertura de água, esgoto e resíduos sólidos por município. Dados consultados via Instituto Água e Saneamento (IAS) para São Luís (2111300), Santo Amaro (2110278), Humberto de Campos (2105005) e Tutóia (2112506). São Luís: esgoto 41,9%; água 89,2%; resíduos 100% (SINISA 2024).</div>
-      <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/sao-luis" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">IAS · São Luís ↗</a>
-      &nbsp;|&nbsp;
-      <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/santo-amaro" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">IAS · Santo Amaro ↗</a>
-      &nbsp;|&nbsp;
-      <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/humberto-de-campos" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">IAS · Humberto de Campos ↗</a>
-      &nbsp;|&nbsp;
-      <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/tutoia" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">IAS · Tutóia ↗</a>
+    <div class="ref-grid">
+      <div class="ref-card" style="border-left:3px solid #003893">
+        <div class="ref-card-title">1. IBGE — Censo Demográfico 2022</div>
+        <div class="ref-card-body">Domicílios com energia elétrica, esgotamento sanitário por rede geral, destino do lixo e moradia adequada. Resultado do Universo, publicado em 2024.</div>
+        <a href="https://censo2022.ibge.gov.br/resultados.html" target="_blank">censo2022.ibge.gov.br/resultados ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #003893">
+        <div class="ref-card-title">2. SINISA 2024 — Sistema Nacional de Informações em Saneamento Básico</div>
+        <div class="ref-card-body">Cobertura de água, esgoto e resíduos sólidos por município via Instituto Água e Saneamento (IAS). São Luís: esgoto 41,9%; água 89,2%; resíduos 100%.</div>
+        <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/sao-luis" target="_blank">IAS · São Luís ↗</a> &nbsp;|&nbsp;
+        <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/santo-amaro" target="_blank">Santo Amaro ↗</a> &nbsp;|&nbsp;
+        <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/humberto-de-campos" target="_blank">Humberto de Campos ↗</a> &nbsp;|&nbsp;
+        <a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ma/tutoia" target="_blank">Tutóia ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #003893">
+        <div class="ref-card-title">3. IBGE MUNIC 2023 — Pesquisa de Informações Básicas Municipais</div>
+        <div class="ref-card-body">Plano municipal de saneamento, alertas hidrológicos, plano diretor de drenagem e mecanismos de controle social.</div>
+        <a href="https://www.ibge.gov.br/estatisticas/sociais/saude/10586-pesquisa-de-informacoes-basicas-municipais.html?=&t=resultados" target="_blank">ibge.gov.br/munic/resultados ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #FCC30B">
+        <div class="ref-card-title">4. ANEEL SIGEL 2024 — Sistema de Informações Geográficas do Setor Elétrico</div>
+        <div class="ref-card-body">Unidades de geração distribuída (solar fotovoltaica) por município. Nenhuma das 4 cidades-piloto possuía instalações registradas em 2024.</div>
+        <a href="https://www.aneel.gov.br/geracao-distribuida" target="_blank">aneel.gov.br/geracao-distribuida ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #3F7E44">
+        <div class="ref-card-title">5. CEMADEN 2024 — Centro Nacional de Monitoramento e Alertas de Desastres Naturais</div>
+        <div class="ref-card-body">Municípios em áreas de risco, sistemas de alerta, ocorrências hidrológicas e vulnerabilidade climática municipal.</div>
+        <a href="https://www.cemaden.gov.br/municipios-monitorados/" target="_blank">cemaden.gov.br/municipios-monitorados ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #3F7E44">
+        <div class="ref-card-title">6. IBAMA / MapBiomas 2022 — Cobertura e Uso do Solo</div>
+        <div class="ref-card-body">Cobertura vegetal remanescente, preservação de manguezais e monitoramento de ecossistemas costeiros nos biomas Amazônia e Cerrado.</div>
+        <a href="https://plataforma.mapbiomas.org/map" target="_blank">plataforma.mapbiomas.org/map ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #0A97D9">
+        <div class="ref-card-title">7. MPA 2023 — Ministério da Pesca e Aquicultura</div>
+        <div class="ref-card-body">Gestão pesqueira artesanal, acordos de pesca comunitária e ordenamento pesqueiro em municípios costeiros do Maranhão.</div>
+        <a href="https://www.gov.br/mpa/pt-br/assuntos/aquicultura-e-pesca/gestao-do-uso-sustentavel-dos-recursos-pesqueiros" target="_blank">gov.br/mpa/gestao-pesqueira ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #0A97D9">
+        <div class="ref-card-title">8. ANA 2023 — Agência Nacional de Águas e Saneamento Básico</div>
+        <div class="ref-card-body">Qualidade da água em corpos hídricos costeiros e monitoramento hidrológico. Dados SNIRH para a Região Hidrográfica Atlântico NE Ocidental.</div>
+        <a href="https://www.snirh.gov.br/portal/centrais-de-conteudo/conjuntura-dos-recursos-hidricos" target="_blank">snirh.gov.br/conjuntura-hidrica ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #19486A">
+        <div class="ref-card-title">9. CGU 2023 — Escala Brasil Transparente</div>
+        <div class="ref-card-body">Avaliação da transparência ativa e passiva dos municípios brasileiros. Indicador de dados abertos e acesso à informação pública.</div>
+        <a href="https://mbt.cgu.gov.br" target="_blank">mbt.cgu.gov.br ↗</a>
+      </div>
+      <div class="ref-card" style="border-left:3px solid #19486A">
+        <div class="ref-card-title">10. TCU / SEFAZ-MA 2024 — Financiamentos Climáticos</div>
+        <div class="ref-card-body">Acesso municipal a linhas de crédito e editais de financiamento climático (BNDES Clima, BID, Fundo Amazônia). Dados de contratos e convênios federais.</div>
+        <a href="https://portaldatransparencia.gov.br/transferencias/consulta" target="_blank">portaldatransparencia.gov.br/transferencias ↗</a>
+      </div>
+      <div class="ref-card highlight" style="border-left:3px solid #001f5b">
+        <div class="ref-card-title">11. Referência Metodológica — Modelo de Atributos ODS</div>
+        <div class="ref-card-body">Cunha, D.R., et al. (2025). <em>SDG Attributes: A Sustainability Assessment Framework for Brazilian Ports.</em> <strong>Marine Policy</strong>. Universidade Federal do Maranhão (UFMA). A metodologia ISM-ODS (escala 1–5, 5 níveis de maturidade) é aplicada aqui aos 4 municípios-piloto do Projeto Radar ODS.</div>
+        <a href="https://sdgporthub.com" target="_blank">sdgporthub.com ↗</a> &nbsp;|&nbsp;
+        <a href="https://sdgports.manus.space" target="_blank">sdgports.manus.space ↗</a>
+      </div>
     </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #003893">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">3. IBGE MUNIC 2023 — Pesquisa de Informações Básicas Municipais</div>
-      <div style="color:#718096;line-height:1.6">Existência de plano municipal de saneamento, política de saneamento, conselho, alertas hidrológicos, plano diretor de drenagem e mecanismos de controle social.</div>
-      <a href="https://www.ibge.gov.br/estatisticas/sociais/saude/10586-pesquisa-de-informacoes-basicas-municipais.html?=&t=resultados" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">ibge.gov.br/munic/resultados ↗</a>
+    <div class="ref-footer">
+      Universidade Federal do Maranhão · UFMA | Cidades Sustentáveis | Profa. Dra. Darliane Ribeiro Cunha (PI), PhD | Versão 2.0 · Dados reais · Junho/2026
     </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #FCC30B">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">4. ANEEL SIGEL 2024 — Sistema de Informações Geográficas do Setor Elétrico</div>
-      <div style="color:#718096;line-height:1.6">Unidades de geração distribuída (solar fotovoltaica) por município. Nenhuma das 4 cidades-piloto possuía instalações registradas em 2024.</div>
-      <a href="https://www.aneel.gov.br/geracao-distribuida" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">aneel.gov.br/geracao-distribuida ↗</a>
-    </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #3F7E44">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">5. CEMADEN 2024 — Centro Nacional de Monitoramento e Alertas de Desastres Naturais</div>
-      <div style="color:#718096;line-height:1.6">Municípios em áreas de risco, sistemas de alerta, ocorrências hidrológicas e vulnerabilidade climática municipal.</div>
-      <a href="https://www.cemaden.gov.br/municipios-monitorados/" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">cemaden.gov.br/municipios-monitorados ↗</a>
-    </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #3F7E44">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">6. IBAMA / MapBiomas 2022 — Cobertura e Uso do Solo</div>
-      <div style="color:#718096;line-height:1.6">Cobertura vegetal remanescente, preservação de manguezais e monitoramento de ecossistemas costeiros nos biomas Amazônia e Cerrado (municípios da Margem Equatorial Maranhense).</div>
-      <a href="https://plataforma.mapbiomas.org/map" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">plataforma.mapbiomas.org/map ↗</a>
-    </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #0A97D9">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">7. MPA 2023 — Ministério da Pesca e Aquicultura</div>
-      <div style="color:#718096;line-height:1.6">Dados sobre gestão pesqueira artesanal, acordos de pesca comunitária e ordenamento pesqueiro em municípios costeiros do Maranhão.</div>
-      <a href="https://www.gov.br/mpa/pt-br/assuntos/aquicultura-e-pesca/gestao-do-uso-sustentavel-dos-recursos-pesqueiros" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">gov.br/mpa/gestao-pesqueira ↗</a>
-    </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #0A97D9">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">8. ANA 2023 — Agência Nacional de Águas e Saneamento Básico</div>
-      <div style="color:#718096;line-height:1.6">Qualidade da água em corpos hídricos costeiros e monitoramento hidrológico. Dados SNIRH para a Região Hidrográfica Atlântico NE Ocidental.</div>
-      <a href="https://www.snirh.gov.br/portal/centrais-de-conteudo/conjuntura-dos-recursos-hidricos" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">snirh.gov.br/conjuntura-hidrica ↗</a>
-    </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #19486A">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">9. CGU 2023 — Escala Brasil Transparente</div>
-      <div style="color:#718096;line-height:1.6">Avaliação da transparência ativa e passiva dos municípios brasileiros. Indicador de dados abertos e acesso à informação pública.</div>
-      <a href="https://mbt.cgu.gov.br" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">mbt.cgu.gov.br ↗</a>
-    </div>
-
-    <div style="background:#f7fafc;border-radius:8px;padding:12px 14px;border-left:3px solid #19486A">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">10. TCU / SEFAZ-MA 2024 — Financiamentos Climáticos</div>
-      <div style="color:#718096;line-height:1.6">Acesso municipal a linhas de crédito e editais de financiamento climático (BNDES Clima, BID, Fundo Amazônia). Dados de contratos e convênios federais.</div>
-      <a href="https://portaldatransparencia.gov.br/transferencias/consulta" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">portaldatransparencia.gov.br/transferencias ↗</a>
-    </div>
-
-    <div style="background:#eef2fb;border-radius:8px;padding:12px 14px;border-left:3px solid #001f5b;grid-column:1/-1">
-      <div style="font-weight:700;color:#001f5b;margin-bottom:4px">11. Referência Metodológica — Modelo de Atributos ODS</div>
-      <div style="color:#718096;line-height:1.6">Cunha, D.R., et al. (2025). <em>A multi-attribute sustainability model for port municipalities under the Sustainable Development Goals.</em> <strong>Marine Policy</strong>. Universidade Federal do Maranhão (UFMA) / Erasmus University Rotterdam.
-        A metodologia ISM-ODS (escala 1–5, 5 níveis de maturidade) é aplicada aqui aos 4 municípios-piloto do Projeto Radar ODS.</div>
-      <a href="https://sdgporthub.com" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">sdgporthub.com ↗</a>
-      &nbsp;|&nbsp;
-      <a href="https://sdgports.manus.space" target="_blank" style="color:#009EDB;text-decoration:none;font-size:.65rem">sdgports.manus.space ↗</a>
-    </div>
-
   </div>
-
-  <p style="font-size:.63rem;color:#a0aec0;margin-top:18px;text-align:center;line-height:1.6">
-    Plataforma desenvolvida no âmbito do Projeto Radar ODS · Profa. Dra. Darliane Ribeiro Cunha (PI) · UFMA · Versão 2.0 (dados reais) · Junho/2026
-  </p>
-</section>
+</div>
 
 </body>
 </html>
